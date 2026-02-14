@@ -50,6 +50,10 @@
 import Overview from './pages/Overview';
 import Providers from './pages/Providers';
 import Licenses from './pages/Licenses';
+import Programs from './pages/Programs';
+import Sites from './pages/Sites';
+import Openings from './pages/Openings';
+import Matching from './pages/Matching';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +61,10 @@ export const PAGES = {
     "Overview": Overview,
     "Providers": Providers,
     "Licenses": Licenses,
+    "Programs": Programs,
+    "Sites": Sites,
+    "Openings": Openings,
+    "Matching": Matching,
 }
 
 export const pagesConfig = {
