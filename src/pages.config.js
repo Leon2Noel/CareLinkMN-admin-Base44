@@ -54,6 +54,10 @@ import Programs from './pages/Programs';
 import Sites from './pages/Sites';
 import Openings from './pages/Openings';
 import Matching from './pages/Matching';
+import Compliance from './pages/Compliance';
+import Capabilities from './pages/Capabilities';
+import Funding from './pages/Funding';
+import AuditLogs from './pages/AuditLogs';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +69,10 @@ export const PAGES = {
     "Sites": Sites,
     "Openings": Openings,
     "Matching": Matching,
+    "Compliance": Compliance,
+    "Capabilities": Capabilities,
+    "Funding": Funding,
+    "AuditLogs": AuditLogs,
 }
 
 export const pagesConfig = {
