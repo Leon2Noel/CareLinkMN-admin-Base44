@@ -58,6 +58,10 @@ import Compliance from './pages/Compliance';
 import Capabilities from './pages/Capabilities';
 import Funding from './pages/Funding';
 import AuditLogs from './pages/AuditLogs';
+import Subscriptions from './pages/Subscriptions';
+import UsersRoles from './pages/UsersRoles';
+import Marketplace from './pages/Marketplace';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +77,10 @@ export const PAGES = {
     "Capabilities": Capabilities,
     "Funding": Funding,
     "AuditLogs": AuditLogs,
+    "Subscriptions": Subscriptions,
+    "UsersRoles": UsersRoles,
+    "Marketplace": Marketplace,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
