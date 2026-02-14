@@ -65,6 +65,7 @@ import Settings from './pages/Settings';
 import LicenseTaxonomy from './pages/LicenseTaxonomy';
 import LicenseMapping from './pages/LicenseMapping';
 import SubscriptionGating from './pages/SubscriptionGating';
+import ProviderDetail from './pages/ProviderDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +88,7 @@ export const PAGES = {
     "LicenseTaxonomy": LicenseTaxonomy,
     "LicenseMapping": LicenseMapping,
     "SubscriptionGating": SubscriptionGating,
+    "ProviderDetail": ProviderDetail,
 }
 
 export const pagesConfig = {

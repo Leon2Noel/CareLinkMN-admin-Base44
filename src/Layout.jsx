@@ -43,6 +43,8 @@ const navItems = [
   { name: 'Overview', icon: LayoutDashboard, page: 'Overview' },
   { name: 'Providers', icon: Building2, page: 'Providers' },
   { name: 'Licenses', icon: FileCheck, page: 'Licenses' },
+  { name: 'License Taxonomy', icon: FileCheck, page: 'LicenseTaxonomy', indent: true },
+  { name: 'License Mapping', icon: FileCheck, page: 'LicenseMapping', indent: true },
   { name: 'Programs', icon: Layers, page: 'Programs' },
   { name: 'Capabilities', icon: Sparkles, page: 'Capabilities' },
   { name: 'Sites', icon: MapPin, page: 'Sites' },
@@ -52,6 +54,7 @@ const navItems = [
   { name: 'Compliance', icon: ShieldCheck, page: 'Compliance', badge: 3 },
   { name: 'Marketplace', icon: Store, page: 'Marketplace' },
   { name: 'Subscriptions', icon: CreditCard, page: 'Subscriptions' },
+  { name: 'Gating Rules', icon: CreditCard, page: 'SubscriptionGating', indent: true },
   { name: 'Users & Roles', icon: Users, page: 'UsersRoles' },
   { name: 'Audit Logs', icon: ScrollText, page: 'AuditLogs' },
   { name: 'Settings', icon: Settings, page: 'Settings' },
@@ -187,7 +190,8 @@ export default function Layout({ children, currentPageName }) {
                   isActive
                     ? "bg-blue-50 text-blue-700"
                     : "text-slate-600 hover:bg-slate-100",
-                  collapsed && "justify-center"
+                  collapsed && "justify-center",
+                  item.indent && !collapsed && "ml-4 text-sm"
                 )}
               >
                 <item.icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-blue-600")} />
