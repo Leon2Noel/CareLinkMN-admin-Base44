@@ -62,6 +62,9 @@ import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
 import Marketplace from './pages/Marketplace';
 import Settings from './pages/Settings';
+import LicenseTaxonomy from './pages/LicenseTaxonomy';
+import LicenseMapping from './pages/LicenseMapping';
+import SubscriptionGating from './pages/SubscriptionGating';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +84,9 @@ export const PAGES = {
     "UsersRoles": UsersRoles,
     "Marketplace": Marketplace,
     "Settings": Settings,
+    "LicenseTaxonomy": LicenseTaxonomy,
+    "LicenseMapping": LicenseMapping,
+    "SubscriptionGating": SubscriptionGating,
 }
 
 export const pagesConfig = {
