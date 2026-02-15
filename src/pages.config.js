@@ -47,48 +47,54 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Overview from './pages/Overview';
-import Providers from './pages/Providers';
-import Licenses from './pages/Licenses';
-import Programs from './pages/Programs';
-import Sites from './pages/Sites';
-import Openings from './pages/Openings';
-import Matching from './pages/Matching';
-import Compliance from './pages/Compliance';
-import Capabilities from './pages/Capabilities';
-import Funding from './pages/Funding';
 import AuditLogs from './pages/AuditLogs';
+import Capabilities from './pages/Capabilities';
+import Compliance from './pages/Compliance';
+import Funding from './pages/Funding';
+import LicenseMapping from './pages/LicenseMapping';
+import LicenseTaxonomy from './pages/LicenseTaxonomy';
+import Licenses from './pages/Licenses';
+import Marketplace from './pages/Marketplace';
+import Matching from './pages/Matching';
+import Openings from './pages/Openings';
+import Overview from './pages/Overview';
+import Programs from './pages/Programs';
+import ProviderDetail from './pages/ProviderDetail';
+import Providers from './pages/Providers';
+import Settings from './pages/Settings';
+import Sites from './pages/Sites';
+import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import Marketplace from './pages/Marketplace';
-import Settings from './pages/Settings';
-import LicenseTaxonomy from './pages/LicenseTaxonomy';
-import LicenseMapping from './pages/LicenseMapping';
-import SubscriptionGating from './pages/SubscriptionGating';
-import ProviderDetail from './pages/ProviderDetail';
+import MatchingDashboard from './pages/MatchingDashboard';
+import MatchingConfig from './pages/MatchingConfig';
+import MatchingSimulation from './pages/MatchingSimulation';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Overview": Overview,
-    "Providers": Providers,
-    "Licenses": Licenses,
-    "Programs": Programs,
-    "Sites": Sites,
-    "Openings": Openings,
-    "Matching": Matching,
-    "Compliance": Compliance,
-    "Capabilities": Capabilities,
-    "Funding": Funding,
     "AuditLogs": AuditLogs,
+    "Capabilities": Capabilities,
+    "Compliance": Compliance,
+    "Funding": Funding,
+    "LicenseMapping": LicenseMapping,
+    "LicenseTaxonomy": LicenseTaxonomy,
+    "Licenses": Licenses,
+    "Marketplace": Marketplace,
+    "Matching": Matching,
+    "Openings": Openings,
+    "Overview": Overview,
+    "Programs": Programs,
+    "ProviderDetail": ProviderDetail,
+    "Providers": Providers,
+    "Settings": Settings,
+    "Sites": Sites,
+    "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "Marketplace": Marketplace,
-    "Settings": Settings,
-    "LicenseTaxonomy": LicenseTaxonomy,
-    "LicenseMapping": LicenseMapping,
-    "SubscriptionGating": SubscriptionGating,
-    "ProviderDetail": ProviderDetail,
+    "MatchingDashboard": MatchingDashboard,
+    "MatchingConfig": MatchingConfig,
+    "MatchingSimulation": MatchingSimulation,
 }
 
 export const pagesConfig = {
