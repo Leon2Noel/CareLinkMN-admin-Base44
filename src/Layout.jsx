@@ -39,6 +39,9 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
+// Provider portal pages - use ProviderLayout
+const PROVIDER_PAGES = ['ProviderOverview', 'ProviderIdentity', 'ProviderLicenses', 'ProviderPrograms', 'ProviderCapabilities', 'ProviderSites', 'ProviderOpenings'];
+
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, page: 'Overview' },
   { name: 'Providers', icon: Building2, page: 'Providers' },
@@ -68,6 +71,16 @@ export default function Layout({ children, currentPageName }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
+
+  // Use ProviderLayout for provider pages
+  if (PROVIDER_PAGES.includes(currentPageName)) {
+    const ProviderLayout = React.lazy(() => import('./pages/ProviderLayout'));
+    return (
+      <React.Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+        <ProviderLayout currentPageName={currentPageName}>{children}</ProviderLayout>
+      </React.Suspense>
+    );
+  }
 
   useEffect(() => {
     const loadUser = async () => {
