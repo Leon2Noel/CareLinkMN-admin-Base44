@@ -56,6 +56,9 @@ import LicenseTaxonomy from './pages/LicenseTaxonomy';
 import Licenses from './pages/Licenses';
 import Marketplace from './pages/Marketplace';
 import Matching from './pages/Matching';
+import MatchingConfig from './pages/MatchingConfig';
+import MatchingDashboard from './pages/MatchingDashboard';
+import MatchingSimulation from './pages/MatchingSimulation';
 import Openings from './pages/Openings';
 import Overview from './pages/Overview';
 import Programs from './pages/Programs';
@@ -66,9 +69,12 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import MatchingDashboard from './pages/MatchingDashboard';
-import MatchingConfig from './pages/MatchingConfig';
-import MatchingSimulation from './pages/MatchingSimulation';
+import ProviderOverview from './pages/ProviderOverview';
+import ProviderIdentity from './pages/ProviderIdentity';
+import ProviderLicenses from './pages/ProviderLicenses';
+import ProviderPrograms from './pages/ProviderPrograms';
+import ProviderCapabilities from './pages/ProviderCapabilities';
+import ProviderSites from './pages/ProviderSites';
 import __Layout from './Layout.jsx';
 
 
@@ -82,6 +88,9 @@ export const PAGES = {
     "Licenses": Licenses,
     "Marketplace": Marketplace,
     "Matching": Matching,
+    "MatchingConfig": MatchingConfig,
+    "MatchingDashboard": MatchingDashboard,
+    "MatchingSimulation": MatchingSimulation,
     "Openings": Openings,
     "Overview": Overview,
     "Programs": Programs,
@@ -92,9 +101,12 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "MatchingDashboard": MatchingDashboard,
-    "MatchingConfig": MatchingConfig,
-    "MatchingSimulation": MatchingSimulation,
+    "ProviderOverview": ProviderOverview,
+    "ProviderIdentity": ProviderIdentity,
+    "ProviderLicenses": ProviderLicenses,
+    "ProviderPrograms": ProviderPrograms,
+    "ProviderCapabilities": ProviderCapabilities,
+    "ProviderSites": ProviderSites,
 }
 
 export const pagesConfig = {
