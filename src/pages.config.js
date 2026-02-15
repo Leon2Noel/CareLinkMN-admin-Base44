@@ -75,6 +75,8 @@ import ProviderLicenses from './pages/ProviderLicenses';
 import ProviderPrograms from './pages/ProviderPrograms';
 import ProviderCapabilities from './pages/ProviderCapabilities';
 import ProviderSites from './pages/ProviderSites';
+import ProviderOpenings from './pages/ProviderOpenings';
+import ProviderLayout from './pages/ProviderLayout';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +109,8 @@ export const PAGES = {
     "ProviderPrograms": ProviderPrograms,
     "ProviderCapabilities": ProviderCapabilities,
     "ProviderSites": ProviderSites,
+    "ProviderOpenings": ProviderOpenings,
+    "ProviderLayout": ProviderLayout,
 }
 
 export const pagesConfig = {
