@@ -84,6 +84,7 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
+import AIAssistant from './pages/AIAssistant';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +126,7 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
+    "AIAssistant": AIAssistant,
 }
 
 export const pagesConfig = {
