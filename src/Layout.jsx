@@ -52,6 +52,7 @@ const navItems = [
   { name: 'Capabilities', icon: Sparkles, page: 'Capabilities' },
   { name: 'Sites', icon: MapPin, page: 'Sites' },
   { name: 'Openings', icon: DoorOpen, page: 'Openings' },
+  { name: 'AI Assistant', icon: Sparkles, page: 'AIAssistant' },
   { name: 'Matching', icon: GitMerge, page: 'Matching' },
   { name: 'Engine Dashboard', icon: GitMerge, page: 'MatchingDashboard', indent: true },
   { name: 'Config & Weights', icon: GitMerge, page: 'MatchingConfig', indent: true },

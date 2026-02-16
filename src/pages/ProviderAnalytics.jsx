@@ -120,13 +120,30 @@ export default function ProviderAnalytics() {
     // Profile Views
     const totalViews = profileViews.length;
 
+    // Outcome Metrics
+    const placedReferrals = rangeReferrals.filter(r => r.placement_status === 'placed').length;
+    const placementRate = rangeReferrals.length > 0 
+      ? (placedReferrals / rangeReferrals.length * 100).toFixed(1) 
+      : 0;
+
+    const satisfactionRatings = rangeReferrals
+      .filter(r => r.outcome_satisfaction)
+      .map(r => r.outcome_satisfaction);
+    const avgSatisfaction = satisfactionRatings.length > 0
+      ? (satisfactionRatings.reduce((sum, rating) => sum + rating, 0) / satisfactionRatings.length).toFixed(1)
+      : 0;
+
     return {
       fillRate,
       avgResponseTime,
       acceptanceRate,
       totalViews,
       activeOpenings: openings.filter(o => o.status === 'active').length,
-      totalReferrals: rangeReferrals.length
+      totalReferrals: rangeReferrals.length,
+      placementRate,
+      placedReferrals,
+      avgSatisfaction,
+      satisfactionCount: satisfactionRatings.length
     };
   }, [openings, referrals, profileViews, startDate]);
 
@@ -195,6 +212,21 @@ export default function ProviderAnalytics() {
     return Object.entries(bins).map(([range, count]) => ({ range, count }));
   }, [referrals]);
 
+  // Placement Outcomes Data
+  const placementOutcomesData = useMemo(() => {
+    const outcomes = {
+      placed: referrals.filter(r => r.placement_status === 'placed').length,
+      not_placed: referrals.filter(r => r.placement_status === 'not_placed').length,
+      pending: referrals.filter(r => !r.placement_status || r.placement_status === 'pending').length
+    };
+
+    return [
+      { name: 'Placed', value: outcomes.placed },
+      { name: 'Not Placed', value: outcomes.not_placed },
+      { name: 'Pending', value: outcomes.pending }
+    ].filter(item => item.value > 0);
+  }, [referrals]);
+
   const exportData = () => {
     const csvData = [
       ['Metric', 'Value'],
@@ -250,7 +282,7 @@ export default function ProviderAnalytics() {
       />
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Opening Fill Rate"
           value={`${metrics.fillRate}%`}
@@ -276,12 +308,20 @@ export default function ProviderAnalytics() {
           subtitle={`${referrals.filter(r => r.status === 'accepted').length} accepted`}
         />
         <StatCard
-          title="Profile Views"
-          value={metrics.totalViews}
+          title="Placement Rate"
+          value={`${metrics.placementRate}%`}
+          icon={TrendingUp}
+          iconColor="text-indigo-600"
+          iconBg="bg-indigo-50"
+          subtitle={`${metrics.placedReferrals} placed`}
+        />
+        <StatCard
+          title="Avg Satisfaction"
+          value={metrics.avgSatisfaction > 0 ? `${metrics.avgSatisfaction}/5` : 'N/A'}
           icon={BarChart3}
           iconColor="text-amber-600"
           iconBg="bg-amber-50"
-          subtitle={`Last ${dateRange} days`}
+          subtitle={`${metrics.satisfactionCount} ratings`}
         />
       </div>
 
@@ -344,6 +384,34 @@ export default function ProviderAnalytics() {
                   dataKey="value"
                 >
                   {openingStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Placement Outcomes */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Client Placement Outcomes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={placementOutcomesData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {placementOutcomesData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -427,16 +495,14 @@ export default function ProviderAnalytics() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-600">Declined</span>
-                  <span className="font-medium text-red-600">
-                    {referrals.filter(r => r.status === 'declined').length}
+                  <span className="text-slate-600">Placed</span>
+                  <span className="font-medium text-indigo-600">
+                    {metrics.placedReferrals}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-600">Under Review</span>
-                  <span className="font-medium text-amber-600">
-                    {referrals.filter(r => r.status === 'under_review').length}
-                  </span>
+                  <span className="text-slate-600">Placement Rate</span>
+                  <span className="font-medium">{metrics.placementRate}%</span>
                 </div>
               </div>
             </div>
