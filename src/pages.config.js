@@ -86,6 +86,9 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
+import CMOverview from './pages/CMOverview';
+import FamilyOverview from './pages/FamilyOverview';
+import HospitalOverview from './pages/HospitalOverview';
 import __Layout from './Layout.jsx';
 
 
@@ -129,6 +132,9 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
+    "CMOverview": CMOverview,
+    "FamilyOverview": FamilyOverview,
+    "HospitalOverview": HospitalOverview,
 }
 
 export const pagesConfig = {
