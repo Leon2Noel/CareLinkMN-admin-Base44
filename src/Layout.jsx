@@ -120,12 +120,12 @@ export default function Layout({ children, currentPageName }) {
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-white">
             <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <Link to={createPageUrl('Home')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">CL</span>
                 </div>
                 <span className="font-semibold text-slate-900">CareLinkMN</span>
-              </div>
+              </Link>
               <button onClick={() => setMobileOpen(false)} className="p-2 hover:bg-slate-100 rounded-lg">
                 <X className="w-5 h-5 text-slate-600" />
               </button>
