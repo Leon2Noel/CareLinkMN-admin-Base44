@@ -100,8 +100,8 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link to={createPageUrl('Login')}>Log In</Link>
+            <Button variant="ghost" onClick={() => window.location.href = '/login'}>
+              Log In
             </Button>
             <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGetStarted}>
               Get Started

@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AIAssistant from './pages/AIAssistant';
 import AuditLogs from './pages/AuditLogs';
 import Capabilities from './pages/Capabilities';
 import CaseManagerSearch from './pages/CaseManagerSearch';
@@ -84,11 +85,11 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import AIAssistant from './pages/AIAssistant';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AIAssistant": AIAssistant,
     "AuditLogs": AuditLogs,
     "Capabilities": Capabilities,
     "CaseManagerSearch": CaseManagerSearch,
@@ -126,7 +127,6 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "AIAssistant": AIAssistant,
 }
 
 export const pagesConfig = {
