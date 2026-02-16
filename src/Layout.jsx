@@ -172,17 +172,17 @@ export default function Layout({ children, currentPageName }) {
           "h-16 border-b border-slate-200 flex items-center",
           collapsed ? "justify-center px-3" : "px-4"
         )}>
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold">CL</span>
-            </div>
-            {!collapsed && (
-              <div>
-                <span className="font-semibold text-slate-900">CareLinkMN</span>
-                <p className="text-xs text-slate-500">Admin Portal</p>
+          <Link to={createPageUrl('Home')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold">CL</span>
               </div>
-            )}
-          </div>
+              {!collapsed && (
+                <div>
+                  <span className="font-semibold text-slate-900">CareLinkMN</span>
+                  <p className="text-xs text-slate-500">Admin Portal</p>
+                </div>
+              )}
+            </Link>
         </div>
 
         {/* Navigation */}
