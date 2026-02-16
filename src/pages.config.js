@@ -78,6 +78,7 @@ import ReferralBuilder from './pages/ReferralBuilder';
 import ProviderLicenses from './pages/ProviderLicenses';
 import GetStarted from './pages/GetStarted';
 import Register from './pages/Register';
+import ReferralTracking from './pages/ReferralTracking';
 import __Layout from './Layout.jsx';
 
 
@@ -113,6 +114,7 @@ export const PAGES = {
     "ProviderLicenses": ProviderLicenses,
     "GetStarted": GetStarted,
     "Register": Register,
+    "ReferralTracking": ReferralTracking,
 }
 
 export const pagesConfig = {

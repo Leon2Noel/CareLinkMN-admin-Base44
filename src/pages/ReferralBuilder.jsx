@@ -364,32 +364,49 @@ export default function ReferralBuilder() {
                     const org = organizations.find(o => o.id === opening?.organization_id);
                     const site = sites.find(s => s.id === opening?.site_id);
                     
+                    // AI Match Quality Indicators
+                    const matchQuality = match.score >= 85 ? 'excellent' : match.score >= 70 ? 'good' : 'acceptable';
+                    const matchColor = matchQuality === 'excellent' ? 'emerald' : matchQuality === 'good' ? 'blue' : 'amber';
+                    
                     return (
                       <Card
                         key={match.opening_id}
-                        className={`cursor-pointer transition-all ${
+                        className={`cursor-pointer transition-all border-2 ${
                           selectedOpenings.includes(match.opening_id)
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'hover:border-slate-300'
+                            ? `border-${matchColor}-500 bg-${matchColor}-50`
+                            : `hover:border-${matchColor}-200`
                         }`}
                         onClick={() => toggleOpening(match.opening_id)}
                       >
                         <CardContent className="p-4">
-                          <div className="flex items-start justify-between">
+                          <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
+                              <div className="flex items-center gap-2 mb-2">
                                 <h4 className="font-semibold text-slate-900">{opening?.title}</h4>
-                                <Badge variant={match.score >= 70 ? 'default' : 'secondary'}>
-                                  {match.score}% match
-                                </Badge>
+                                <div className="flex items-center gap-1">
+                                  <div className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                    matchQuality === 'excellent' ? 'bg-emerald-600 text-white' :
+                                    matchQuality === 'good' ? 'bg-blue-600 text-white' :
+                                    'bg-amber-600 text-white'
+                                  }`}>
+                                    {match.score}%
+                                  </div>
+                                  {matchQuality === 'excellent' && (
+                                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300">
+                                      Excellent Match
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-sm text-slate-600 mb-2">{org?.legal_name}</p>
-                              <p className="text-xs text-slate-500">{site?.city}, {site?.county} County</p>
-                              <p className="text-xs text-slate-600 mt-2">{match.explanation}</p>
+                              <p className="text-sm text-slate-600 mb-1">{org?.legal_name}</p>
+                              <p className="text-xs text-slate-500 mb-2">{site?.city}, {site?.county} County</p>
+                              <p className="text-xs text-slate-700 bg-slate-50 rounded p-2 mt-2">
+                                <span className="font-medium">AI Analysis:</span> {match.explanation}
+                              </p>
                             </div>
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                               selectedOpenings.includes(match.opening_id)
-                                ? 'bg-blue-600 border-blue-600'
+                                ? `bg-${matchColor}-600 border-${matchColor}-600`
                                 : 'border-slate-300'
                             }`}>
                               {selectedOpenings.includes(match.opening_id) && (

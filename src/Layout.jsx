@@ -53,6 +53,7 @@ const navItems = [
   { name: 'Engine Dashboard', icon: GitMerge, page: 'MatchingDashboard', indent: true },
   { name: 'Config & Weights', icon: GitMerge, page: 'MatchingConfig', indent: true },
   { name: 'Search Simulation', icon: GitMerge, page: 'MatchingSimulation', indent: true },
+  { name: 'Referral Tracking', icon: GitMerge, page: 'ReferralTracking' },
   { name: 'Funding', icon: Wallet, page: 'Funding' },
   { name: 'Compliance', icon: ShieldCheck, page: 'Compliance', badge: 3 },
   { name: 'Marketplace', icon: Store, page: 'Marketplace' },
