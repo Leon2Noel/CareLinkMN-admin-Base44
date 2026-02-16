@@ -35,7 +35,8 @@ import {
   XCircle,
   BarChart3,
   Download,
-  Calendar
+  Calendar,
+  Building2
 } from 'lucide-react';
 import { format, subDays, differenceInHours, differenceInDays, parseISO } from 'date-fns';
 
@@ -45,6 +46,9 @@ export default function ProviderAnalytics() {
   const [dateRange, setDateRange] = useState('30');
   const [user, setUser] = useState(null);
   const [organization, setOrganization] = useState(null);
+  const [programFilter, setProgramFilter] = useState('all');
+  const [diagnosisFilter, setDiagnosisFilter] = useState('all');
+  const [referralSourceFilter, setReferralSourceFilter] = useState('all');
 
   React.useEffect(() => {
     const loadUser = async () => {
@@ -92,11 +96,67 @@ export default function ProviderAnalytics() {
     initialData: []
   });
 
+  const { data: programs = [] } = useQuery({
+    queryKey: ['programs'],
+    queryFn: () => base44.entities.ProgramActivation.list(),
+    initialData: []
+  });
+
+  // Apply filters to referrals
+  const filteredReferrals = useMemo(() => {
+    return referrals.filter(r => {
+      if (programFilter !== 'all') {
+        const opening = openings.find(o => o.id === r.opening_id);
+        if (!opening || opening.program_activation_id !== programFilter) return false;
+      }
+      if (diagnosisFilter !== 'all' && !r.diagnosis_summary?.toLowerCase().includes(diagnosisFilter.toLowerCase())) {
+        return false;
+      }
+      if (referralSourceFilter !== 'all' && r.referral_source !== referralSourceFilter) {
+        return false;
+      }
+      return true;
+    });
+  }, [referrals, programFilter, diagnosisFilter, referralSourceFilter, openings]);
+
+  // Get unique diagnoses for filter
+  const uniqueDiagnoses = useMemo(() => {
+    const diagnoses = new Set();
+    referrals.forEach(r => {
+      if (r.diagnosis_summary) {
+        const words = r.diagnosis_summary.toLowerCase().split(/[\s,]+/);
+        words.forEach(w => diagnoses.add(w));
+      }
+    });
+    return Array.from(diagnoses).slice(0, 10);
+  }, [referrals]);
+
+  // Referral Source Effectiveness
+  const referralSourceData = useMemo(() => {
+    const sources = {};
+    filteredReferrals.forEach(r => {
+      const source = r.referral_source || 'unknown';
+      if (!sources[source]) {
+        sources[source] = { total: 0, accepted: 0, placed: 0 };
+      }
+      sources[source].total++;
+      if (r.status === 'accepted') sources[source].accepted++;
+      if (r.placement_status === 'placed') sources[source].placed++;
+    });
+
+    return Object.entries(sources).map(([source, data]) => ({
+      source: source.replace('_', ' '),
+      total: data.total,
+      acceptanceRate: ((data.accepted / data.total) * 100).toFixed(1),
+      placementRate: ((data.placed / data.total) * 100).toFixed(1)
+    }));
+  }, [filteredReferrals]);
+
   // Calculate metrics
   const metrics = useMemo(() => {
     const now = new Date();
     const rangeOpenings = openings.filter(o => new Date(o.created_date) >= startDate);
-    const rangeReferrals = referrals.filter(r => new Date(r.created_date) >= startDate);
+    const rangeReferrals = filteredReferrals.filter(r => new Date(r.created_date) >= startDate);
 
     // Fill Rate
     const filledOpenings = rangeOpenings.filter(o => o.status === 'filled').length;
@@ -145,7 +205,7 @@ export default function ProviderAnalytics() {
       avgSatisfaction,
       satisfactionCount: satisfactionRatings.length
     };
-  }, [openings, referrals, profileViews, startDate]);
+  }, [openings, filteredReferrals, profileViews, startDate]);
 
   // Opening Status Distribution
   const openingStatusData = useMemo(() => {
@@ -167,7 +227,7 @@ export default function ProviderAnalytics() {
       const date = subDays(new Date(), i);
       const dateStr = format(date, 'MMM d');
       
-      const dayReferrals = referrals.filter(r => {
+      const dayReferrals = filteredReferrals.filter(r => {
         const refDate = new Date(r.created_date);
         return format(refDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
       });
@@ -180,7 +240,7 @@ export default function ProviderAnalytics() {
       });
     }
     return days;
-  }, [referrals, dateRange]);
+  }, [filteredReferrals, dateRange]);
 
   // Views by Role
   const viewsByRoleData = useMemo(() => {
@@ -200,7 +260,7 @@ export default function ProviderAnalytics() {
   const responseTimeData = useMemo(() => {
     const bins = { '0-4h': 0, '4-8h': 0, '8-24h': 0, '24-48h': 0, '48h+': 0 };
     
-    referrals.filter(r => r.provider_response_date).forEach(r => {
+    filteredReferrals.filter(r => r.provider_response_date).forEach(r => {
       const hours = differenceInHours(parseISO(r.provider_response_date), parseISO(r.created_date));
       if (hours < 4) bins['0-4h']++;
       else if (hours < 8) bins['4-8h']++;
@@ -210,14 +270,14 @@ export default function ProviderAnalytics() {
     });
 
     return Object.entries(bins).map(([range, count]) => ({ range, count }));
-  }, [referrals]);
+  }, [filteredReferrals]);
 
   // Placement Outcomes Data
   const placementOutcomesData = useMemo(() => {
     const outcomes = {
-      placed: referrals.filter(r => r.placement_status === 'placed').length,
-      not_placed: referrals.filter(r => r.placement_status === 'not_placed').length,
-      pending: referrals.filter(r => !r.placement_status || r.placement_status === 'pending').length
+      placed: filteredReferrals.filter(r => r.placement_status === 'placed').length,
+      not_placed: filteredReferrals.filter(r => r.placement_status === 'not_placed').length,
+      pending: filteredReferrals.filter(r => !r.placement_status || r.placement_status === 'pending').length
     };
 
     return [
@@ -225,24 +285,47 @@ export default function ProviderAnalytics() {
       { name: 'Not Placed', value: outcomes.not_placed },
       { name: 'Pending', value: outcomes.pending }
     ].filter(item => item.value > 0);
-  }, [referrals]);
+  }, [filteredReferrals]);
 
-  const exportData = () => {
-    const csvData = [
+  const generateReport = () => {
+    const reportData = [
+      ['CareLinkMN Provider Analytics Report'],
+      [`Organization: ${organization.legal_name}`],
+      [`Date Range: Last ${dateRange} days`],
+      [`Generated: ${format(new Date(), 'yyyy-MM-dd HH:mm')}`],
+      [`Filters: Program=${programFilter}, Diagnosis=${diagnosisFilter}, Source=${referralSourceFilter}`],
+      [''],
+      ['KEY METRICS'],
       ['Metric', 'Value'],
       ['Fill Rate', `${metrics.fillRate}%`],
       ['Avg Response Time', `${metrics.avgResponseTime}h`],
       ['Acceptance Rate', `${metrics.acceptanceRate}%`],
+      ['Placement Rate', `${metrics.placementRate}%`],
+      ['Avg Satisfaction', metrics.avgSatisfaction],
       ['Profile Views', metrics.totalViews],
       ['Active Openings', metrics.activeOpenings],
-      ['Total Referrals', metrics.totalReferrals]
+      ['Total Referrals', metrics.totalReferrals],
+      [''],
+      ['REFERRAL SOURCE EFFECTIVENESS'],
+      ['Source', 'Total', 'Acceptance Rate', 'Placement Rate'],
+      ...referralSourceData.map(s => [s.source, s.total, `${s.acceptanceRate}%`, `${s.placementRate}%`]),
+      [''],
+      ['DETAILED REFERRAL DATA'],
+      ['Date', 'Source', 'Status', 'Placement Status', 'Response Time (hrs)'],
+      ...filteredReferrals.map(r => [
+        format(new Date(r.created_date), 'yyyy-MM-dd'),
+        r.referral_source,
+        r.status,
+        r.placement_status || 'pending',
+        r.provider_response_date ? differenceInHours(parseISO(r.provider_response_date), parseISO(r.created_date)) : 'N/A'
+      ])
     ].map(row => row.join(',')).join('\n');
 
-    const blob = new Blob([csvData], { type: 'text/csv' });
+    const blob = new Blob([reportData], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.download = `provider-report-${format(new Date(), 'yyyy-MM-dd')}.csv`;
     a.click();
   };
 
@@ -273,13 +356,75 @@ export default function ProviderAnalytics() {
                 <SelectItem value="365">Last year</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={exportData}>
+            <Button variant="outline" onClick={generateReport}>
               <Download className="w-4 h-4 mr-2" />
-              Export CSV
+              Generate Report
             </Button>
           </div>
         }
       />
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex-1 min-w-[200px]">
+              <Select value={programFilter} onValueChange={setProgramFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Programs" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Programs</SelectItem>
+                  {programs.map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.program_model_code}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <Select value={diagnosisFilter} onValueChange={setDiagnosisFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Diagnoses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Diagnoses</SelectItem>
+                  {uniqueDiagnoses.map(d => (
+                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <Select value={referralSourceFilter} onValueChange={setReferralSourceFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Sources" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sources</SelectItem>
+                  <SelectItem value="case_manager">Case Manager</SelectItem>
+                  <SelectItem value="family">Family</SelectItem>
+                  <SelectItem value="self">Self</SelectItem>
+                  <SelectItem value="hospital">Hospital</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {(programFilter !== 'all' || diagnosisFilter !== 'all' || referralSourceFilter !== 'all') && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => {
+                  setProgramFilter('all');
+                  setDiagnosisFilter('all');
+                  setReferralSourceFilter('all');
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -421,6 +566,27 @@ export default function ProviderAnalytics() {
           </CardContent>
         </Card>
 
+        {/* Referral Source Effectiveness */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Referral Source Effectiveness</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={referralSourceData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="source" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="total" fill="#3b82f6" name="Total Referrals" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="acceptanceRate" fill="#10b981" name="Acceptance %" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="placementRate" fill="#8b5cf6" name="Placement %" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
         {/* Views by Role */}
         <Card>
           <CardHeader>
@@ -491,7 +657,7 @@ export default function ProviderAnalytics() {
                 <div className="flex justify-between">
                   <span className="text-slate-600">Accepted</span>
                   <span className="font-medium text-emerald-600">
-                    {referrals.filter(r => r.status === 'accepted').length}
+                    {filteredReferrals.filter(r => r.status === 'accepted').length}
                   </span>
                 </div>
                 <div className="flex justify-between">
