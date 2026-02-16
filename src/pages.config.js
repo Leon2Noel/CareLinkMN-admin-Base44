@@ -69,6 +69,8 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
+import ProviderRegister from './pages/ProviderRegister';
+import ProviderPortal from './pages/ProviderPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +97,8 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
+    "ProviderRegister": ProviderRegister,
+    "ProviderPortal": ProviderPortal,
 }
 
 export const pagesConfig = {
