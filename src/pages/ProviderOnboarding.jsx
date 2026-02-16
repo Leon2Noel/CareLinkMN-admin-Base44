@@ -296,7 +296,7 @@ Format your response as JSON with this structure:
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <STEPS[currentStep - 1].icon className="w-5 h-5" />
+              {React.createElement(STEPS[currentStep - 1].icon, { className: "w-5 h-5" })}
               {STEPS[currentStep - 1].name}
             </CardTitle>
           </CardHeader>
