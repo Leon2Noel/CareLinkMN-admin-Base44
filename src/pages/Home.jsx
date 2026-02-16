@@ -22,12 +22,21 @@ export default function Home() {
     try {
       const isAuth = await base44.auth.isAuthenticated();
       if (isAuth) {
-        window.location.href = createPageUrl('Overview');
+        const user = await base44.auth.me();
+        const roleRedirects = {
+          provider: createPageUrl('ProviderOverview'),
+          cm: createPageUrl('CMOverview'),
+          family: createPageUrl('FamilyOverview'),
+          guardian: createPageUrl('FamilyOverview'),
+          hospital: createPageUrl('HospitalOverview'),
+          admin: createPageUrl('Overview')
+        };
+        window.location.href = roleRedirects[user.primary_role] || createPageUrl('GetStarted');
       } else {
-        window.location.href = '/login?next=' + encodeURIComponent(createPageUrl('Overview'));
+        window.location.href = createPageUrl('GetStarted');
       }
     } catch {
-      window.location.href = '/login';
+      window.location.href = createPageUrl('GetStarted');
     }
   };
 
@@ -111,14 +120,34 @@ export default function Home() {
 
           <div className="flex items-center gap-3">
             <Button variant="ghost" onClick={async () => {
-              const isAuth = await base44.auth.isAuthenticated();
-              if (isAuth) {
-                window.location.href = createPageUrl('Overview');
-              } else {
+              try {
+                const isAuth = await base44.auth.isAuthenticated();
+                if (isAuth) {
+                  const user = await base44.auth.me();
+                  const roleRedirects = {
+                    provider: createPageUrl('ProviderOverview'),
+                    cm: createPageUrl('CMOverview'),
+                    family: createPageUrl('FamilyOverview'),
+                    guardian: createPageUrl('FamilyOverview'),
+                    hospital: createPageUrl('HospitalOverview'),
+                    admin: createPageUrl('Overview')
+                  };
+                  window.location.href = roleRedirects[user.primary_role] || createPageUrl('Overview');
+                } else {
+                  window.location.href = '/login';
+                }
+              } catch {
                 window.location.href = '/login';
               }
             }}>
-              Log In
+              {await (async () => {
+                try {
+                  const isAuth = await base44.auth.isAuthenticated();
+                  return isAuth ? 'Dashboard' : 'Log In';
+                } catch {
+                  return 'Log In';
+                }
+              })()}
             </Button>
             <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGetStarted}>
               Get Started
