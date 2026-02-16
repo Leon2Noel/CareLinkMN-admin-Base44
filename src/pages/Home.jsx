@@ -1,4 +1,5 @@
 import React from 'react';
+import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -17,8 +18,17 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
-  const handleGetStarted = () => {
-    window.location.href = createPageUrl('GetStarted');
+  const handleGetStarted = async () => {
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        window.location.href = createPageUrl('Overview');
+      } else {
+        window.location.href = '/login?next=' + encodeURIComponent(createPageUrl('Overview'));
+      }
+    } catch {
+      window.location.href = '/login';
+    }
   };
 
   const features = [
@@ -100,7 +110,14 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => window.location.href = '/login'}>
+            <Button variant="ghost" onClick={async () => {
+              const isAuth = await base44.auth.isAuthenticated();
+              if (isAuth) {
+                window.location.href = createPageUrl('Overview');
+              } else {
+                window.location.href = '/login';
+              }
+            }}>
               Log In
             </Button>
             <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGetStarted}>

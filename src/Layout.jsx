@@ -78,10 +78,16 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const userData = await base44.auth.me();
-        setUser(userData);
+        const isAuth = await base44.auth.isAuthenticated();
+        if (isAuth) {
+          const userData = await base44.auth.me();
+          setUser(userData);
+        } else {
+          // Redirect to login if on protected page
+          base44.auth.redirectToLogin(window.location.pathname);
+        }
       } catch (e) {
-        // Not logged in
+        console.error('Auth check failed:', e);
       }
     };
     loadUser();
