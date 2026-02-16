@@ -82,6 +82,7 @@ import UsersRoles from './pages/UsersRoles';
 import ProviderOnboarding from './pages/ProviderOnboarding';
 import Notifications from './pages/Notifications';
 import NotificationPreferences from './pages/NotificationPreferences';
+import ProviderAnalytics from './pages/ProviderAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -121,6 +122,7 @@ export const PAGES = {
     "ProviderOnboarding": ProviderOnboarding,
     "Notifications": Notifications,
     "NotificationPreferences": NotificationPreferences,
+    "ProviderAnalytics": ProviderAnalytics,
 }
 
 export const pagesConfig = {
