@@ -1,325 +1,483 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { useSearchParams } from 'react-router-dom';
 import PageHeader from '@/components/ui/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import DataTable from '@/components/ui/DataTable';
-import { Eye, MapPin, User, Clock, TrendingUp, Search, Bell } from 'lucide-react';
-import { formatDistanceToNow, parseISO, subDays } from 'date-fns';
+import StatCard from '@/components/ui/StatCard';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+import {
+  TrendingUp,
+  DoorOpen,
+  Clock,
+  CheckCircle,
+  XCircle,
+  BarChart3,
+  Download,
+  Calendar
+} from 'lucide-react';
+import { format, subDays, differenceInHours, differenceInDays, parseISO } from 'date-fns';
+
+const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
 
 export default function ProviderAnalytics() {
-  const [searchParams] = useSearchParams();
-  const orgId = searchParams.get('org_id');
-  const [timeRange, setTimeRange] = useState('7d');
+  const [dateRange, setDateRange] = useState('30');
   const [user, setUser] = useState(null);
+  const [organization, setOrganization] = useState(null);
 
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+  React.useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await base44.auth.me();
+        setUser(userData);
+        
+        // Get provider organization
+        const orgs = await base44.entities.Organization.filter({ created_by: userData.email });
+        if (orgs.length > 0) {
+          setOrganization(orgs[0]);
+        }
+      } catch (e) {
+        console.error('Failed to load user:', e);
+      }
+    };
+    loadUser();
   }, []);
 
-  const cutoffDate = timeRange === '7d' ? subDays(new Date(), 7) : subDays(new Date(), 30);
-
-  const { data: views = [], isLoading } = useQuery({
-    queryKey: ['provider-views', orgId, timeRange],
-    queryFn: async () => {
-      const allViews = await base44.entities.ProfileView.filter({ provider_org_id: orgId });
-      return allViews.filter(v => parseISO(v.created_date) >= cutoffDate);
-    },
-    enabled: !!orgId
-  });
+  const startDate = useMemo(() => {
+    return subDays(new Date(), parseInt(dateRange));
+  }, [dateRange]);
 
   const { data: openings = [] } = useQuery({
-    queryKey: ['provider-openings', orgId],
-    queryFn: () => base44.entities.Opening.filter({ organization_id: orgId }),
-    enabled: !!orgId
+    queryKey: ['provider-openings', organization?.id],
+    queryFn: () => base44.entities.Opening.filter({ organization_id: organization.id }),
+    enabled: !!organization,
+    initialData: []
   });
 
-  // Aggregate metrics
-  const totalViews = views.length;
-  const uniqueViewers = new Set(views.filter(v => v.viewer_user_id).map(v => v.viewer_user_id)).size;
-  const profileViews = views.filter(v => v.entity_type === 'provider_profile').length;
-  const openingViews = views.filter(v => v.entity_type === 'opening').length;
-  const siteViews = views.filter(v => v.entity_type === 'site').length;
+  const { data: referrals = [] } = useQuery({
+    queryKey: ['provider-referrals', organization?.id],
+    queryFn: () => base44.entities.Referral.filter({ organization_id: organization.id }),
+    enabled: !!organization,
+    initialData: []
+  });
 
-  const countyStats = views
-    .filter(v => v.viewer_county)
-    .reduce((acc, v) => {
-      acc[v.viewer_county] = (acc[v.viewer_county] || 0) + 1;
+  const { data: profileViews = [] } = useQuery({
+    queryKey: ['profile-views', organization?.id, startDate],
+    queryFn: async () => {
+      const views = await base44.entities.ProfileView.filter({ provider_org_id: organization.id });
+      return views.filter(v => new Date(v.created_date) >= startDate);
+    },
+    enabled: !!organization,
+    initialData: []
+  });
+
+  // Calculate metrics
+  const metrics = useMemo(() => {
+    const now = new Date();
+    const rangeOpenings = openings.filter(o => new Date(o.created_date) >= startDate);
+    const rangeReferrals = referrals.filter(r => new Date(r.created_date) >= startDate);
+
+    // Fill Rate
+    const filledOpenings = rangeOpenings.filter(o => o.status === 'filled').length;
+    const fillRate = rangeOpenings.length > 0 ? (filledOpenings / rangeOpenings.length * 100).toFixed(1) : 0;
+
+    // Average Response Time (in hours)
+    const respondedReferrals = rangeReferrals.filter(r => r.provider_response_date);
+    const totalResponseTime = respondedReferrals.reduce((sum, r) => {
+      return sum + differenceInHours(parseISO(r.provider_response_date), parseISO(r.created_date));
+    }, 0);
+    const avgResponseTime = respondedReferrals.length > 0 
+      ? (totalResponseTime / respondedReferrals.length).toFixed(1) 
+      : 0;
+
+    // Referral Acceptance Rate
+    const acceptedReferrals = rangeReferrals.filter(r => r.status === 'accepted').length;
+    const acceptanceRate = rangeReferrals.length > 0 
+      ? (acceptedReferrals / rangeReferrals.length * 100).toFixed(1) 
+      : 0;
+
+    // Profile Views
+    const totalViews = profileViews.length;
+
+    return {
+      fillRate,
+      avgResponseTime,
+      acceptanceRate,
+      totalViews,
+      activeOpenings: openings.filter(o => o.status === 'active').length,
+      totalReferrals: rangeReferrals.length
+    };
+  }, [openings, referrals, profileViews, startDate]);
+
+  // Opening Status Distribution
+  const openingStatusData = useMemo(() => {
+    const statusCounts = openings.reduce((acc, o) => {
+      acc[o.status] = (acc[o.status] || 0) + 1;
       return acc;
     }, {});
 
-  const topCounties = Object.entries(countyStats)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 5);
+    return Object.entries(statusCounts).map(([status, count]) => ({
+      name: status.replace('_', ' '),
+      value: count
+    }));
+  }, [openings]);
 
-  const referrerStats = views.reduce((acc, v) => {
-    acc[v.referrer || 'direct'] = (acc[v.referrer || 'direct'] || 0) + 1;
-    return acc;
-  }, {});
+  // Referral Timeline (last 30 days)
+  const referralTimelineData = useMemo(() => {
+    const days = [];
+    for (let i = parseInt(dateRange) - 1; i >= 0; i--) {
+      const date = subDays(new Date(), i);
+      const dateStr = format(date, 'MMM d');
+      
+      const dayReferrals = referrals.filter(r => {
+        const refDate = new Date(r.created_date);
+        return format(refDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+      });
 
-  const openingViewStats = openings.map(opening => {
-    const openingViewCount = views.filter(v => 
-      v.entity_type === 'opening' && v.entity_id === opening.id
-    ).length;
+      days.push({
+        date: dateStr,
+        received: dayReferrals.length,
+        accepted: dayReferrals.filter(r => r.status === 'accepted').length,
+        declined: dayReferrals.filter(r => r.status === 'declined').length
+      });
+    }
+    return days;
+  }, [referrals, dateRange]);
+
+  // Views by Role
+  const viewsByRoleData = useMemo(() => {
+    const roleCounts = profileViews.reduce((acc, v) => {
+      const role = v.viewer_role || 'unknown';
+      acc[role] = (acc[role] || 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(roleCounts).map(([role, count]) => ({
+      name: role.replace('_', ' '),
+      value: count
+    }));
+  }, [profileViews]);
+
+  // Response Time Distribution
+  const responseTimeData = useMemo(() => {
+    const bins = { '0-4h': 0, '4-8h': 0, '8-24h': 0, '24-48h': 0, '48h+': 0 };
     
-    return {
-      ...opening,
-      view_count: openingViewCount
-    };
-  }).sort((a, b) => b.view_count - a.view_count);
+    referrals.filter(r => r.provider_response_date).forEach(r => {
+      const hours = differenceInHours(parseISO(r.provider_response_date), parseISO(r.created_date));
+      if (hours < 4) bins['0-4h']++;
+      else if (hours < 8) bins['4-8h']++;
+      else if (hours < 24) bins['8-24h']++;
+      else if (hours < 48) bins['24-48h']++;
+      else bins['48h+']++;
+    });
 
-  const recentViews = views
-    .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
-    .slice(0, 50);
+    return Object.entries(bins).map(([range, count]) => ({ range, count }));
+  }, [referrals]);
 
-  const viewerColumns = [
-    {
-      key: 'viewer_role',
-      label: 'Viewer Type',
-      render: (row) => (
-        <Badge variant="outline">
-          {row.viewer_role === 'case_manager' ? 'Case Manager' :
-           row.viewer_role === 'guardian' ? 'Guardian' :
-           row.viewer_role === 'admin' ? 'Admin' : 'Unknown'}
-        </Badge>
-      )
-    },
-    {
-      key: 'viewer_county',
-      label: 'County',
-      render: (row) => row.viewer_county ? (
-        <span className="flex items-center gap-1">
-          <MapPin className="w-3 h-3 text-slate-400" />
-          {row.viewer_county}
-        </span>
-      ) : <span className="text-slate-400">-</span>
-    },
-    {
-      key: 'entity_type',
-      label: 'Viewed',
-      render: (row) => (
-        <span className="capitalize">{row.entity_type.replace('_', ' ')}</span>
-      )
-    },
-    {
-      key: 'referrer',
-      label: 'Source',
-      render: (row) => {
-        const icons = {
-          search: Search,
-          notification: Bell,
-          referral: User,
-          direct: Eye
-        };
-        const Icon = icons[row.referrer] || Eye;
-        return (
-          <span className="flex items-center gap-1 capitalize">
-            <Icon className="w-3 h-3 text-slate-400" />
-            {row.referrer || 'direct'}
-          </span>
-        );
-      }
-    },
-    {
-      key: 'created_date',
-      label: 'When',
-      render: (row) => (
-        <span className="text-xs text-slate-500">
-          {formatDistanceToNow(parseISO(row.created_date), { addSuffix: true })}
-        </span>
-      )
-    }
-  ];
+  const exportData = () => {
+    const csvData = [
+      ['Metric', 'Value'],
+      ['Fill Rate', `${metrics.fillRate}%`],
+      ['Avg Response Time', `${metrics.avgResponseTime}h`],
+      ['Acceptance Rate', `${metrics.acceptanceRate}%`],
+      ['Profile Views', metrics.totalViews],
+      ['Active Openings', metrics.activeOpenings],
+      ['Total Referrals', metrics.totalReferrals]
+    ].map(row => row.join(',')).join('\n');
 
-  const openingColumns = [
-    { key: 'title', label: 'Opening' },
-    {
-      key: 'view_count',
-      label: 'Views',
-      render: (row) => (
-        <div className="flex items-center gap-2">
-          <Eye className="w-4 h-4 text-slate-400" />
-          <span className="font-semibold">{row.view_count}</span>
-        </div>
-      )
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      render: (row) => (
-        <Badge variant={row.status === 'active' ? 'default' : 'outline'}>
-          {row.status}
-        </Badge>
-      )
-    }
-  ];
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.click();
+  };
+
+  if (!organization) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-slate-500">Loading analytics...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="space-y-6">
       <PageHeader
-        title="Analytics & Engagement"
-        description="Track who's viewing your openings and profile"
+        title="Analytics Dashboard"
+        description={`Performance insights for ${organization.legal_name}`}
         actions={
-          <div className="flex gap-2">
-            <Button
-              variant={timeRange === '7d' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setTimeRange('7d')}
-            >
-              Last 7 Days
-            </Button>
-            <Button
-              variant={timeRange === '30d' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setTimeRange('30d')}
-            >
-              Last 30 Days
+          <div className="flex items-center gap-3">
+            <Select value={dateRange} onValueChange={setDateRange}>
+              <SelectTrigger className="w-40">
+                <Calendar className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">Last 7 days</SelectItem>
+                <SelectItem value="30">Last 30 days</SelectItem>
+                <SelectItem value="90">Last 90 days</SelectItem>
+                <SelectItem value="365">Last year</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={exportData}>
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
             </Button>
           </div>
         }
       />
 
-      {/* Overview Metrics */}
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          title="Opening Fill Rate"
+          value={`${metrics.fillRate}%`}
+          icon={DoorOpen}
+          iconColor="text-blue-600"
+          iconBg="bg-blue-50"
+          subtitle={`${openings.filter(o => o.status === 'filled').length} filled`}
+        />
+        <StatCard
+          title="Avg Response Time"
+          value={`${metrics.avgResponseTime}h`}
+          icon={Clock}
+          iconColor="text-purple-600"
+          iconBg="bg-purple-50"
+          subtitle="To referral inquiries"
+        />
+        <StatCard
+          title="Acceptance Rate"
+          value={`${metrics.acceptanceRate}%`}
+          icon={CheckCircle}
+          iconColor="text-emerald-600"
+          iconBg="bg-emerald-50"
+          subtitle={`${referrals.filter(r => r.status === 'accepted').length} accepted`}
+        />
+        <StatCard
+          title="Profile Views"
+          value={metrics.totalViews}
+          icon={BarChart3}
+          iconColor="text-amber-600"
+          iconBg="bg-amber-50"
+          subtitle={`Last ${dateRange} days`}
+        />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Referral Timeline */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Total Views</p>
-                <p className="text-2xl font-bold text-slate-900">{totalViews}</p>
-              </div>
-              <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                <Eye className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
+          <CardHeader>
+            <CardTitle>Referral Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={referralTimelineData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="received" stroke="#3b82f6" name="Received" strokeWidth={2} />
+                <Line type="monotone" dataKey="accepted" stroke="#10b981" name="Accepted" strokeWidth={2} />
+                <Line type="monotone" dataKey="declined" stroke="#ef4444" name="Declined" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
+        {/* Response Time Distribution */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Unique Viewers</p>
-                <p className="text-2xl font-bold text-slate-900">{uniqueViewers}</p>
-              </div>
-              <div className="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center">
-                <User className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
+          <CardHeader>
+            <CardTitle>Response Time Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={responseTimeData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="range" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
+        {/* Opening Status Distribution */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Opening Views</p>
-                <p className="text-2xl font-bold text-slate-900">{openingViews}</p>
-              </div>
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-emerald-600" />
-              </div>
-            </div>
+          <CardHeader>
+            <CardTitle>Opening Status Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={openingStatusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {openingStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
+        {/* Views by Role */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Profile Views</p>
-                <p className="text-2xl font-bold text-slate-900">{profileViews}</p>
-              </div>
-              <div className="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-amber-600" />
-              </div>
-            </div>
+          <CardHeader>
+            <CardTitle>Profile Views by Role</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={viewsByRoleData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis type="number" tick={{ fontSize: 12 }} />
+                <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={100} />
+                <Tooltip />
+                <Bar dataKey="value" fill="#10b981" radius={[0, 8, 8, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="mb-6">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="openings">By Opening</TabsTrigger>
-          <TabsTrigger value="who-viewed">Who Viewed</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Top Counties</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {topCounties.length === 0 ? (
-                  <p className="text-slate-500 text-sm">No county data yet</p>
-                ) : (
-                  <div className="space-y-3">
-                    {topCounties.map(([county, count]) => (
-                      <div key={county} className="flex items-center justify-between">
-                        <span className="text-sm text-slate-900">{county}</span>
-                        <Badge>{count} views</Badge>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Traffic Sources</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {Object.entries(referrerStats).map(([source, count]) => (
-                    <div key={source} className="flex items-center justify-between">
-                      <span className="text-sm text-slate-900 capitalize">{source}</span>
-                      <Badge>{count} views</Badge>
-                    </div>
-                  ))}
+      {/* Performance Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Performance Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-3">Openings Management</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Total Openings</span>
+                  <span className="font-medium">{openings.length}</span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Active</span>
+                  <span className="font-medium text-emerald-600">{metrics.activeOpenings}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Filled</span>
+                  <span className="font-medium text-blue-600">
+                    {openings.filter(o => o.status === 'filled').length}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Average Time to Fill</span>
+                  <span className="font-medium">
+                    {openings.filter(o => o.status === 'filled').length > 0
+                      ? Math.round(
+                          openings
+                            .filter(o => o.status === 'filled')
+                            .reduce((sum, o) => sum + differenceInDays(new Date(), new Date(o.created_date)), 0) /
+                            openings.filter(o => o.status === 'filled').length
+                        )
+                      : 0}{' '}
+                    days
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-3">Referral Performance</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Total Referrals</span>
+                  <span className="font-medium">{metrics.totalReferrals}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Accepted</span>
+                  <span className="font-medium text-emerald-600">
+                    {referrals.filter(r => r.status === 'accepted').length}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Declined</span>
+                  <span className="font-medium text-red-600">
+                    {referrals.filter(r => r.status === 'declined').length}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Under Review</span>
+                  <span className="font-medium text-amber-600">
+                    {referrals.filter(r => r.status === 'under_review').length}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-3">Engagement Insights</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Profile Views</span>
+                  <span className="font-medium">{metrics.totalViews}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Opening Views</span>
+                  <span className="font-medium">
+                    {openings.reduce((sum, o) => sum + (o.views_count || 0), 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Inquiries</span>
+                  <span className="font-medium">
+                    {openings.reduce((sum, o) => sum + (o.inquiries_count || 0), 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Conversion Rate</span>
+                  <span className="font-medium">
+                    {openings.reduce((sum, o) => sum + (o.views_count || 0), 0) > 0
+                      ? (
+                          (openings.reduce((sum, o) => sum + (o.inquiries_count || 0), 0) /
+                            openings.reduce((sum, o) => sum + (o.views_count || 0), 0)) *
+                          100
+                        ).toFixed(1)
+                      : 0}
+                    %
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        </TabsContent>
-
-        <TabsContent value="openings">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Opening Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                columns={openingColumns}
-                data={openingViewStats}
-                emptyMessage="No openings to display"
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="who-viewed">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Recent Viewers</CardTitle>
-              <p className="text-sm text-slate-500">Anonymized viewer activity</p>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                columns={viewerColumns}
-                data={recentViews}
-                emptyMessage="No views yet"
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }

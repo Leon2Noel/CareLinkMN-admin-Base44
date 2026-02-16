@@ -51,6 +51,7 @@ import AuditLogs from './pages/AuditLogs';
 import Capabilities from './pages/Capabilities';
 import CaseManagerSearch from './pages/CaseManagerSearch';
 import Compliance from './pages/Compliance';
+import DemoSetup from './pages/DemoSetup';
 import Funding from './pages/Funding';
 import GetStarted from './pages/GetStarted';
 import Home from './pages/Home';
@@ -62,12 +63,16 @@ import Matching from './pages/Matching';
 import MatchingConfig from './pages/MatchingConfig';
 import MatchingDashboard from './pages/MatchingDashboard';
 import MatchingSimulation from './pages/MatchingSimulation';
+import NotificationPreferences from './pages/NotificationPreferences';
+import Notifications from './pages/Notifications';
 import OpeningDetail from './pages/OpeningDetail';
 import Openings from './pages/Openings';
 import Overview from './pages/Overview';
 import Programs from './pages/Programs';
+import ProviderAnalytics from './pages/ProviderAnalytics';
 import ProviderDetail from './pages/ProviderDetail';
 import ProviderLicenses from './pages/ProviderLicenses';
+import ProviderOnboarding from './pages/ProviderOnboarding';
 import ProviderPortal from './pages/ProviderPortal';
 import ProviderRegister from './pages/ProviderRegister';
 import Providers from './pages/Providers';
@@ -79,11 +84,6 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import ProviderOnboarding from './pages/ProviderOnboarding';
-import Notifications from './pages/Notifications';
-import NotificationPreferences from './pages/NotificationPreferences';
-import ProviderAnalytics from './pages/ProviderAnalytics';
-import DemoSetup from './pages/DemoSetup';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +92,7 @@ export const PAGES = {
     "Capabilities": Capabilities,
     "CaseManagerSearch": CaseManagerSearch,
     "Compliance": Compliance,
+    "DemoSetup": DemoSetup,
     "Funding": Funding,
     "GetStarted": GetStarted,
     "Home": Home,
@@ -103,12 +104,16 @@ export const PAGES = {
     "MatchingConfig": MatchingConfig,
     "MatchingDashboard": MatchingDashboard,
     "MatchingSimulation": MatchingSimulation,
+    "NotificationPreferences": NotificationPreferences,
+    "Notifications": Notifications,
     "OpeningDetail": OpeningDetail,
     "Openings": Openings,
     "Overview": Overview,
     "Programs": Programs,
+    "ProviderAnalytics": ProviderAnalytics,
     "ProviderDetail": ProviderDetail,
     "ProviderLicenses": ProviderLicenses,
+    "ProviderOnboarding": ProviderOnboarding,
     "ProviderPortal": ProviderPortal,
     "ProviderRegister": ProviderRegister,
     "Providers": Providers,
@@ -120,11 +125,6 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "ProviderOnboarding": ProviderOnboarding,
-    "Notifications": Notifications,
-    "NotificationPreferences": NotificationPreferences,
-    "ProviderAnalytics": ProviderAnalytics,
-    "DemoSetup": DemoSetup,
 }
 
 export const pagesConfig = {
