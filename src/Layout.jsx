@@ -29,8 +29,11 @@ import {
 } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import FreshnessEnforcementJob from '@/components/provider/FreshnessEnforcementJob';
+import AuthDebugPanel from '@/components/auth/AuthDebugPanel';
+import PostLoginHandler from '@/components/auth/PostLoginHandler';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { clearAuthStorage, getDashboardForRole } from '@/lib/auth-utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -100,7 +103,8 @@ export default function Layout({ children, currentPageName }) {
         } else {
           // Only redirect to login if on protected admin page
           if (currentPageName !== 'Home') {
-            base44.auth.redirectToLogin(window.location.pathname);
+            // Use window.location to avoid nested from_url
+            window.location.href = '/login';
           }
         }
       } catch (e) {
@@ -111,8 +115,22 @@ export default function Layout({ children, currentPageName }) {
     loadUser();
   }, [currentPageName]);
 
-  const handleLogout = () => {
-    base44.auth.logout();
+  const handleLogout = async () => {
+    try {
+      // Clear all auth storage first
+      clearAuthStorage();
+      
+      // Call base44 logout (this should clear server-side session)
+      await base44.auth.logout('/');
+      
+      // Force reload to clear any cached state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force logout anyway
+      clearAuthStorage();
+      window.location.href = '/';
+    }
   };
 
   const getInitials = (name) => {
@@ -327,6 +345,12 @@ export default function Layout({ children, currentPageName }) {
         <main className="p-6 pt-20 lg:pt-6">
           {children}
         </main>
+
+        {/* Post-login handler - processes pending registrations */}
+        <PostLoginHandler />
+
+        {/* Auth Debug Panel - only shows in development */}
+        <AuthDebugPanel />
       </div>
     </div>
   );

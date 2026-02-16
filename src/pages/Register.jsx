@@ -120,26 +120,26 @@ export default function Register() {
     setIsSubmitting(true);
     
     try {
-      // Create user in Base44 system
-      const fullName = `${formData.first_name} ${formData.last_name}`.trim();
-      
-      // Store registration data temporarily
-      localStorage.setItem('pending_registration', JSON.stringify({
-        full_name: fullName,
+      // Store registration intent with role for post-login processing
+      const registrationData = {
+        full_name: `${formData.first_name} ${formData.last_name}`.trim(),
         email: formData.email,
-        role: role,
+        primary_role: role,
         timestamp: Date.now()
-      }));
+      };
       
-      // Redirect to Base44 login/signup - Base44 handles user creation and email verification
-      setShowVerification(true);
+      localStorage.setItem('pending_registration', JSON.stringify(registrationData));
       
-      // After showing message, redirect to login
-      setTimeout(() => {
-        base44.auth.redirectToLogin(window.location.origin + createPageUrl('Home'));
-      }, 3000);
+      // Redirect to Base44 auth flow
+      // Base44 will handle user creation and email verification
+      const returnUrl = role === 'provider' ? 
+        createPageUrl('ProviderOnboarding') : 
+        createPageUrl('Home');
+      
+      base44.auth.redirectToLogin(window.location.origin + returnUrl);
       
     } catch (error) {
+      console.error('Registration error:', error);
       if (error.message?.includes('exists')) {
         setErrors({ email: 'Account already exists. Please log in instead.' });
       } else {
@@ -149,26 +149,7 @@ export default function Register() {
     }
   };
 
-  if (showVerification) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-6">
-        <Card className="max-w-md">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-8 h-8 text-emerald-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Almost There!</h2>
-            <p className="text-slate-600 mb-6">
-              Redirecting you to complete your account setup. You'll receive a verification email at <strong>{formData.email}</strong>.
-            </p>
-            <p className="text-sm text-slate-500">
-              Redirecting in a moment...
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Removed showVerification state - redirect happens immediately now
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
