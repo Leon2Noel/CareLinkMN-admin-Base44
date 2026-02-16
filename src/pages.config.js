@@ -71,6 +71,11 @@ import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
 import ProviderRegister from './pages/ProviderRegister';
 import ProviderPortal from './pages/ProviderPortal';
+import Home from './pages/Home';
+import CaseManagerSearch from './pages/CaseManagerSearch';
+import OpeningDetail from './pages/OpeningDetail';
+import ReferralBuilder from './pages/ReferralBuilder';
+import ProviderLicenses from './pages/ProviderLicenses';
 import __Layout from './Layout.jsx';
 
 
@@ -99,6 +104,11 @@ export const PAGES = {
     "UsersRoles": UsersRoles,
     "ProviderRegister": ProviderRegister,
     "ProviderPortal": ProviderPortal,
+    "Home": Home,
+    "CaseManagerSearch": CaseManagerSearch,
+    "OpeningDetail": OpeningDetail,
+    "ReferralBuilder": ReferralBuilder,
+    "ProviderLicenses": ProviderLicenses,
 }
 
 export const pagesConfig = {
