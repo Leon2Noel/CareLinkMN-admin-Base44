@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -18,6 +18,20 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        setIsLoggedIn(isAuth);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
   const handleGetStarted = async () => {
     try {
       const isAuth = await base44.auth.isAuthenticated();
@@ -140,14 +154,7 @@ export default function Home() {
                 window.location.href = '/login';
               }
             }}>
-              {await (async () => {
-                try {
-                  const isAuth = await base44.auth.isAuthenticated();
-                  return isAuth ? 'Dashboard' : 'Log In';
-                } catch {
-                  return 'Log In';
-                }
-              })()}
+              {isLoggedIn ? 'Dashboard' : 'Log In'}
             </Button>
             <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGetStarted}>
               Get Started
