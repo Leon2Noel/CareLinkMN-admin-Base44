@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { matchReferralToOpenings } from '@/components/matching/MatchingAlgorithm';
+import { matchReferralToOpenings, generateMatchExplanation } from '@/components/matching/MatchingAlgorithm';
 import {
   CheckCircle2,
   ArrowRight,
@@ -94,8 +94,23 @@ export default function ReferralBuilder() {
   };
 
   const handleGenerateMatches = async () => {
-    const result = await matchReferralToOpenings(formData, openings, sites);
-    setMatches(result.results);
+    const result = await matchReferralToOpenings(
+      formData, 
+      openings, 
+      organizations,
+      sites, 
+      [], // licenses - can be loaded if needed
+      [], // capabilities - can be loaded if needed
+      {} // use default config
+    );
+    
+    // Enhance matches with explanations
+    const enhancedMatches = result.results.map(match => ({
+      ...match,
+      explanation: match.explanation || generateMatchExplanation(match.score_breakdown, match.score)
+    }));
+    
+    setMatches(enhancedMatches);
   };
 
   const toggleOpening = (openingId) => {

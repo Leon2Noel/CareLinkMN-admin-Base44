@@ -289,30 +289,30 @@ export function matchReferralToOpenings(referral, openings, organizations, sites
   };
 }
 
-// Generate match explanation text
+// AI-Enhanced Match Explanation Generator
 export function generateMatchExplanation(scoreBreakdown, totalScore) {
-  const explanations = [];
+  const topFactors = Object.entries(scoreBreakdown)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2);
   
-  if (scoreBreakdown.county > 0) {
-    explanations.push(scoreBreakdown.county >= 20 ? 'Serves client county' : 'In service area');
-  }
-  if (scoreBreakdown.funding > 0) {
-    explanations.push('Accepts funding source');
-  }
-  if (scoreBreakdown.gender >= 15) {
-    explanations.push('Gender requirement met');
-  }
-  if (scoreBreakdown.age >= 15) {
-    explanations.push('Within age range');
-  }
-  if (scoreBreakdown.availability >= 12) {
-    explanations.push('Immediately available');
-  }
-  if (scoreBreakdown.capability >= 8) {
-    explanations.push('Capabilities align with needs');
-  }
+  const factorLabels = {
+    county: 'location match',
+    funding: 'funding compatibility',
+    gender: 'gender alignment',
+    age: 'age appropriateness',
+    availability: 'immediate availability',
+    capability: 'care capability fit'
+  };
   
-  return explanations.join('. ') + '.';
+  if (totalScore >= 90) {
+    return `Excellent match! Perfect ${factorLabels[topFactors[0][0]]} and strong ${factorLabels[topFactors[1][0]]}.`;
+  } else if (totalScore >= 75) {
+    return `Strong fit with ${factorLabels[topFactors[0][0]]} (${Math.round(topFactors[0][1])}%) and ${factorLabels[topFactors[1][0]]} (${Math.round(topFactors[1][1])}%).`;
+  } else if (totalScore >= 60) {
+    return `Good ${factorLabels[topFactors[0][0]]}, viable option for placement consideration.`;
+  } else {
+    return `Acceptable match on ${factorLabels[topFactors[0][0]]}, review other criteria carefully.`;
+  }
 }
 
 // Identify risk flags from referral
