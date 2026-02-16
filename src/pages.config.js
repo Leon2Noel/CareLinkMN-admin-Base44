@@ -74,6 +74,7 @@ import ProviderAnalytics from './pages/ProviderAnalytics';
 import ProviderDetail from './pages/ProviderDetail';
 import ProviderLicenses from './pages/ProviderLicenses';
 import ProviderOnboarding from './pages/ProviderOnboarding';
+import ProviderOverview from './pages/ProviderOverview';
 import ProviderPortal from './pages/ProviderPortal';
 import ProviderRegister from './pages/ProviderRegister';
 import Providers from './pages/Providers';
@@ -85,7 +86,6 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import ProviderOverview from './pages/ProviderOverview';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +117,7 @@ export const PAGES = {
     "ProviderDetail": ProviderDetail,
     "ProviderLicenses": ProviderLicenses,
     "ProviderOnboarding": ProviderOnboarding,
+    "ProviderOverview": ProviderOverview,
     "ProviderPortal": ProviderPortal,
     "ProviderRegister": ProviderRegister,
     "Providers": Providers,
@@ -128,7 +129,6 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "ProviderOverview": ProviderOverview,
 }
 
 export const pagesConfig = {

@@ -95,6 +95,20 @@ export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState(null);
+  const [contextTips, setContextTips] = useState('');
+  const [isLoadingTips, setIsLoadingTips] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+
+  // Auto-prefill from existing organization if available
+  const { data: existingOrgs } = useQuery({
+    queryKey: ['organizations', 'current-user'],
+    queryFn: async () => {
+      const user = await base44.auth.me();
+      return await base44.entities.Organization.filter({ 
+        primary_contact_email: user.email 
+      });
+    }
+  });
 
   const [formData, setFormData] = useState({
     // Step 1: Organization
@@ -134,8 +148,72 @@ export default function ProviderOnboarding() {
 
   const [uploadedDocs, setUploadedDocs] = useState([]);
 
+  // Auto-prefill when existing org is loaded
+  React.useEffect(() => {
+    if (existingOrgs && existingOrgs.length > 0) {
+      const org = existingOrgs[0];
+      setFormData(prev => ({
+        ...prev,
+        legal_name: org.legal_name || prev.legal_name,
+        dba_name: org.dba_name || prev.dba_name,
+        ein: org.ein || prev.ein,
+        address: org.address || prev.address,
+        city: org.city || prev.city,
+        zip_code: org.zip_code || prev.zip_code,
+        phone: org.phone || prev.phone,
+        email: org.email || prev.email,
+        website: org.website || prev.website,
+        primary_contact_name: org.primary_contact_name || prev.primary_contact_name,
+        primary_contact_email: org.primary_contact_email || prev.primary_contact_email,
+        primary_contact_phone: org.primary_contact_phone || prev.primary_contact_phone,
+        counties_served: org.counties_served || prev.counties_served,
+        waivers_accepted: org.waivers_accepted || prev.waivers_accepted,
+      }));
+      toast.info('Organization details pre-filled from your profile');
+    }
+  }, [existingOrgs]);
+
+  // Generate context-aware tips when step changes
+  React.useEffect(() => {
+    generateContextTips();
+  }, [currentStep, formData.license_type]);
+
+  const generateContextTips = async () => {
+    setIsLoadingTips(true);
+    try {
+      const stepContext = {
+        1: `Provider is filling organization information. Current data: ${formData.legal_name || 'empty'}`,
+        2: `Provider is selecting license type. Selected: ${formData.license_type || 'none'}`,
+        3: `AI recommendations step. License: ${formData.license_type || 'none'}`,
+        4: `Document upload step. License type: ${formData.license_type || 'none'}`,
+        5: `Final review before submission`
+      };
+
+      const prompt = `You are a helpful onboarding assistant for Minnesota healthcare providers. 
+Context: ${stepContext[currentStep]}
+
+Provide 2-3 concise, actionable tips for this step. Be specific to Minnesota regulations and best practices. 
+Focus on: accuracy, common mistakes to avoid, and compliance requirements.
+Format as a brief paragraph (max 100 words).`;
+
+      const tips = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: false
+      });
+
+      setContextTips(tips);
+    } catch (error) {
+      console.error('Failed to generate tips:', error);
+      setContextTips('');
+    } finally {
+      setIsLoadingTips(false);
+    }
+  };
+
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear validation error for this field
+    setValidationErrors(prev => ({ ...prev, [field]: undefined }));
   };
 
   const toggleArrayItem = (field, value) => {
@@ -208,26 +286,105 @@ Format your response as JSON with this structure:
     }
   };
 
-  // Document upload
+  // Smart document upload with AI validation
   const handleFileUpload = async (e, docType) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Basic file validation
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error('File size must be less than 10MB');
+      return;
+    }
+
+    const allowedTypes = {
+      license: ['application/pdf', 'image/jpeg', 'image/png'],
+      facility_photo: ['image/jpeg', 'image/png'],
+      insurance: ['application/pdf'],
+      staff_cert: ['application/pdf']
+    };
+
+    if (!allowedTypes[docType]?.includes(file.type)) {
+      toast.error('Invalid file type. Please check the accepted formats.');
+      return;
+    }
+
     try {
-      toast.loading('Uploading document...', { id: 'upload' });
+      toast.loading('Uploading and validating document...', { id: 'upload' });
       
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      // AI-powered document validation
+      let validationStatus = 'uploaded';
+      let validationNotes = '';
+
+      if (docType === 'license' && (file.type.includes('pdf') || file.type.includes('image'))) {
+        try {
+          const validation = await base44.integrations.Core.InvokeLLM({
+            prompt: `Analyze this license document and verify:
+1. Is this a Minnesota healthcare provider license?
+2. Can you identify the license number?
+3. Can you identify expiration date?
+4. Does it appear valid and complete?
+
+Provide brief analysis in JSON format.`,
+            file_urls: [file_url],
+            response_json_schema: {
+              type: "object",
+              properties: {
+                is_valid_license: { type: "boolean" },
+                license_number_found: { type: "string" },
+                expiration_found: { type: "string" },
+                completeness_score: { type: "number" },
+                notes: { type: "string" }
+              }
+            }
+          });
+
+          if (validation.is_valid_license && validation.completeness_score >= 70) {
+            validationStatus = 'verified';
+            validationNotes = validation.notes;
+            
+            // Auto-fill license number if found
+            if (validation.license_number_found && !formData.license_number) {
+              updateField('license_number', validation.license_number_found);
+              toast.info('License number auto-filled from document');
+            }
+            
+            // Auto-fill expiration if found
+            if (validation.expiration_found && !formData.expiration_date) {
+              updateField('expiration_date', validation.expiration_found);
+              toast.info('Expiration date auto-filled from document');
+            }
+          } else {
+            validationStatus = 'needs_review';
+            validationNotes = 'Document may be incomplete or unclear. Admin review required.';
+          }
+        } catch (err) {
+          console.error('AI validation failed:', err);
+          validationStatus = 'uploaded';
+        }
+      }
       
       const newDoc = {
         type: docType,
         name: file.name,
         url: file_url,
-        status: 'uploaded',
+        status: validationStatus,
+        validation_notes: validationNotes,
         uploaded_at: new Date().toISOString()
       };
       
       setUploadedDocs(prev => [...prev, newDoc]);
-      toast.success('Document uploaded successfully', { id: 'upload' });
+      
+      if (validationStatus === 'verified') {
+        toast.success('Document uploaded and verified!', { id: 'upload' });
+      } else if (validationStatus === 'needs_review') {
+        toast.warning('Document uploaded but needs review', { id: 'upload' });
+      } else {
+        toast.success('Document uploaded successfully', { id: 'upload' });
+      }
     } catch (error) {
       toast.error('Failed to upload document', { id: 'upload' });
       console.error(error);
@@ -336,6 +493,21 @@ Format your response as JSON with this structure:
               {React.createElement(STEPS[currentStep - 1].icon, { className: "w-5 h-5" })}
               {STEPS[currentStep - 1].name}
             </CardTitle>
+            
+            {/* Context-Aware AI Tips */}
+            {contextTips && (
+              <div className="mt-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-1 text-sm">AI Assistant Tips</h4>
+                    <p className="text-sm text-blue-800 leading-relaxed">{contextTips}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             {/* Step 1: Organization Info */}
@@ -703,22 +875,45 @@ Format your response as JSON with this structure:
                   <div>
                     <h4 className="font-semibold mb-3">Uploaded Documents</h4>
                     <div className="space-y-2">
-                      {uploadedDocs.map((doc, idx) => (
-                        <Card key={idx}>
-                          <CardContent className="p-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm">{doc.name}</p>
-                                <p className="text-xs text-slate-500 capitalize">{doc.type.replace('_', ' ')}</p>
-                              </div>
-                            </div>
-                            <Badge className="bg-emerald-100 text-emerald-700">Uploaded</Badge>
-                          </CardContent>
-                        </Card>
-                      ))}
+                     {uploadedDocs.map((doc, idx) => (
+                       <Card key={idx}>
+                         <CardContent className="p-3">
+                           <div className="flex items-center justify-between mb-2">
+                             <div className="flex items-center gap-3">
+                               <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                 doc.status === 'verified' ? 'bg-emerald-100' :
+                                 doc.status === 'needs_review' ? 'bg-amber-100' :
+                                 'bg-blue-100'
+                               }`}>
+                                 <CheckCircle2 className={`w-5 h-5 ${
+                                   doc.status === 'verified' ? 'text-emerald-600' :
+                                   doc.status === 'needs_review' ? 'text-amber-600' :
+                                   'text-blue-600'
+                                 }`} />
+                               </div>
+                               <div>
+                                 <p className="font-medium text-sm">{doc.name}</p>
+                                 <p className="text-xs text-slate-500 capitalize">{doc.type.replace('_', ' ')}</p>
+                               </div>
+                             </div>
+                             <Badge className={
+                               doc.status === 'verified' ? 'bg-emerald-100 text-emerald-700' :
+                               doc.status === 'needs_review' ? 'bg-amber-100 text-amber-700' :
+                               'bg-blue-100 text-blue-700'
+                             }>
+                               {doc.status === 'verified' ? 'Verified' :
+                                doc.status === 'needs_review' ? 'Needs Review' :
+                                'Uploaded'}
+                             </Badge>
+                           </div>
+                           {doc.validation_notes && (
+                             <p className="text-xs text-slate-600 ml-13 pl-1">
+                               {doc.validation_notes}
+                             </p>
+                           )}
+                         </CardContent>
+                       </Card>
+                     ))}
                     </div>
                   </div>
                 )}
