@@ -42,6 +42,7 @@ import { Badge } from '@/components/ui/badge';
 const navItems = [
   { name: 'Overview', icon: LayoutDashboard, page: 'Overview' },
   { name: 'Providers', icon: Building2, page: 'Providers' },
+  { name: 'Provider Onboarding', icon: Building2, page: 'ProviderOnboarding', indent: true },
   { name: 'Licenses', icon: FileCheck, page: 'Licenses' },
   { name: 'License Taxonomy', icon: FileCheck, page: 'LicenseTaxonomy', indent: true },
   { name: 'License Mapping', icon: FileCheck, page: 'LicenseMapping', indent: true },

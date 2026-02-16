@@ -49,8 +49,11 @@
  */
 import AuditLogs from './pages/AuditLogs';
 import Capabilities from './pages/Capabilities';
+import CaseManagerSearch from './pages/CaseManagerSearch';
 import Compliance from './pages/Compliance';
 import Funding from './pages/Funding';
+import GetStarted from './pages/GetStarted';
+import Home from './pages/Home';
 import LicenseMapping from './pages/LicenseMapping';
 import LicenseTaxonomy from './pages/LicenseTaxonomy';
 import Licenses from './pages/Licenses';
@@ -59,34 +62,35 @@ import Matching from './pages/Matching';
 import MatchingConfig from './pages/MatchingConfig';
 import MatchingDashboard from './pages/MatchingDashboard';
 import MatchingSimulation from './pages/MatchingSimulation';
+import OpeningDetail from './pages/OpeningDetail';
 import Openings from './pages/Openings';
 import Overview from './pages/Overview';
 import Programs from './pages/Programs';
 import ProviderDetail from './pages/ProviderDetail';
+import ProviderLicenses from './pages/ProviderLicenses';
+import ProviderPortal from './pages/ProviderPortal';
+import ProviderRegister from './pages/ProviderRegister';
 import Providers from './pages/Providers';
+import ReferralBuilder from './pages/ReferralBuilder';
+import ReferralTracking from './pages/ReferralTracking';
+import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import ProviderRegister from './pages/ProviderRegister';
-import ProviderPortal from './pages/ProviderPortal';
-import Home from './pages/Home';
-import CaseManagerSearch from './pages/CaseManagerSearch';
-import OpeningDetail from './pages/OpeningDetail';
-import ReferralBuilder from './pages/ReferralBuilder';
-import ProviderLicenses from './pages/ProviderLicenses';
-import GetStarted from './pages/GetStarted';
-import Register from './pages/Register';
-import ReferralTracking from './pages/ReferralTracking';
+import ProviderOnboarding from './pages/ProviderOnboarding';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AuditLogs": AuditLogs,
     "Capabilities": Capabilities,
+    "CaseManagerSearch": CaseManagerSearch,
     "Compliance": Compliance,
     "Funding": Funding,
+    "GetStarted": GetStarted,
+    "Home": Home,
     "LicenseMapping": LicenseMapping,
     "LicenseTaxonomy": LicenseTaxonomy,
     "Licenses": Licenses,
@@ -95,26 +99,24 @@ export const PAGES = {
     "MatchingConfig": MatchingConfig,
     "MatchingDashboard": MatchingDashboard,
     "MatchingSimulation": MatchingSimulation,
+    "OpeningDetail": OpeningDetail,
     "Openings": Openings,
     "Overview": Overview,
     "Programs": Programs,
     "ProviderDetail": ProviderDetail,
+    "ProviderLicenses": ProviderLicenses,
+    "ProviderPortal": ProviderPortal,
+    "ProviderRegister": ProviderRegister,
     "Providers": Providers,
+    "ReferralBuilder": ReferralBuilder,
+    "ReferralTracking": ReferralTracking,
+    "Register": Register,
     "Settings": Settings,
     "Sites": Sites,
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "ProviderRegister": ProviderRegister,
-    "ProviderPortal": ProviderPortal,
-    "Home": Home,
-    "CaseManagerSearch": CaseManagerSearch,
-    "OpeningDetail": OpeningDetail,
-    "ReferralBuilder": ReferralBuilder,
-    "ProviderLicenses": ProviderLicenses,
-    "GetStarted": GetStarted,
-    "Register": Register,
-    "ReferralTracking": ReferralTracking,
+    "ProviderOnboarding": ProviderOnboarding,
 }
 
 export const pagesConfig = {

@@ -131,8 +131,10 @@ export default function Home() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" onClick={handleGetStarted}>
-                List Your Organization
+              <Button size="lg" variant="outline" asChild>
+                <Link to={createPageUrl('ProviderOnboarding')}>
+                  List Your Organization
+                </Link>
               </Button>
             </div>
             <div className="mt-4">
