@@ -80,6 +80,8 @@ import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
 import ProviderOnboarding from './pages/ProviderOnboarding';
+import Notifications from './pages/Notifications';
+import NotificationPreferences from './pages/NotificationPreferences';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +119,8 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
     "ProviderOnboarding": ProviderOnboarding,
+    "Notifications": Notifications,
+    "NotificationPreferences": NotificationPreferences,
 }
 
 export const pagesConfig = {

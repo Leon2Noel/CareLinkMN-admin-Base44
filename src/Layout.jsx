@@ -27,6 +27,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import NotificationBell from '@/components/notifications/NotificationBell';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -55,6 +56,7 @@ const navItems = [
   { name: 'Config & Weights', icon: GitMerge, page: 'MatchingConfig', indent: true },
   { name: 'Search Simulation', icon: GitMerge, page: 'MatchingSimulation', indent: true },
   { name: 'Referral Tracking', icon: GitMerge, page: 'ReferralTracking' },
+  { name: 'Notifications', icon: Bell, page: 'Notifications' },
   { name: 'Funding', icon: Wallet, page: 'Funding' },
   { name: 'Compliance', icon: ShieldCheck, page: 'Compliance', badge: 3 },
   { name: 'Marketplace', icon: Store, page: 'Marketplace' },
@@ -257,10 +259,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="w-5 h-5 text-slate-600" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
-            </Button>
+            <NotificationBell />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
