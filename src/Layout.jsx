@@ -86,27 +86,26 @@ export default function Layout({ children, currentPageName }) {
           // Role-based redirect logic for admin pages
           if (userData.primary_role && userData.primary_role !== 'admin' && currentPageName !== 'Home') {
             const roleRedirects = {
-              provider: '/provider/overview',
-              cm: '/cm/overview',
-              family: '/family/overview',
-              guardian: '/family/overview',
-              hospital: '/hospital/overview'
+              provider: createPageUrl('ProviderOverview'),
+              cm: createPageUrl('CMOverview'),
+              family: createPageUrl('FamilyOverview'),
+              guardian: createPageUrl('FamilyOverview'),
+              hospital: createPageUrl('HospitalOverview')
             };
             const correctDashboard = roleRedirects[userData.primary_role];
-            if (correctDashboard && !window.location.pathname.includes(correctDashboard.split('/')[1])) {
+            if (correctDashboard) {
               window.location.href = correctDashboard;
             }
           }
         } else {
           // Only redirect to login if on protected admin page
-          if (currentPageName !== 'Home' && !window.location.pathname.startsWith('/provider') && 
-              !window.location.pathname.startsWith('/cm') && !window.location.pathname.startsWith('/family') &&
-              !window.location.pathname.startsWith('/hospital')) {
+          if (currentPageName !== 'Home') {
             base44.auth.redirectToLogin(window.location.pathname);
           }
         }
       } catch (e) {
         console.error('Auth check failed:', e);
+        base44.auth.redirectToLogin(window.location.pathname);
       }
     };
     loadUser();
