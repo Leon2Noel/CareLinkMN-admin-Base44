@@ -76,6 +76,8 @@ import CaseManagerSearch from './pages/CaseManagerSearch';
 import OpeningDetail from './pages/OpeningDetail';
 import ReferralBuilder from './pages/ReferralBuilder';
 import ProviderLicenses from './pages/ProviderLicenses';
+import GetStarted from './pages/GetStarted';
+import Register from './pages/Register';
 import __Layout from './Layout.jsx';
 
 
@@ -109,6 +111,8 @@ export const PAGES = {
     "OpeningDetail": OpeningDetail,
     "ReferralBuilder": ReferralBuilder,
     "ProviderLicenses": ProviderLicenses,
+    "GetStarted": GetStarted,
+    "Register": Register,
 }
 
 export const pagesConfig = {
