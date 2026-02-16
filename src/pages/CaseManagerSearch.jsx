@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import StatusBadge from '@/components/ui/StatusBadge';
+import FreshnessIndicator from '@/components/provider/FreshnessIndicator';
+import ViewTrackingService from '@/components/matching/ViewTrackingService';
 import {
   Select,
   SelectContent,
@@ -27,6 +29,7 @@ import {
   X,
   AlertCircle
 } from 'lucide-react';
+import { differenceInHours, parseISO } from 'date-fns';
 
 const MN_COUNTIES = [
   'Anoka', 'Hennepin', 'Ramsey', 'Dakota', 'Washington', 'St. Louis', 
@@ -38,6 +41,7 @@ const AGE_RANGES = ['Less than 18 yrs', '18-55 years', '55 yrs and above'];
 const PROGRAM_TYPES = ['CRS', 'IHS', 'RESPITE', 'MEMORY_CARE', 'SUPPORTED_LIVING'];
 
 export default function CaseManagerSearch() {
+  const [user, setUser] = useState(null);
   const [filters, setFilters] = useState({
     county: '',
     waiver: '',
@@ -46,10 +50,21 @@ export default function CaseManagerSearch() {
     gender: 'any'
   });
 
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
+
   const { data: openings = [], isLoading } = useQuery({
     queryKey: ['cm-openings', filters],
     queryFn: async () => {
       let results = await base44.entities.Opening.filter({ status: 'active' });
+      
+      // Filter out stale openings (not confirmed in 48h)
+      results = results.filter(opening => {
+        if (!opening.last_confirmed_at) return false;
+        const hoursAgo = differenceInHours(new Date(), parseISO(opening.last_confirmed_at));
+        return hoursAgo <= 48;
+      });
       
       // Filter by county if specified
       if (filters.county) {
@@ -287,6 +302,7 @@ export default function CaseManagerSearch() {
                       )}
 
                       <div className="flex flex-wrap gap-2 mb-4">
+                        <FreshnessIndicator opening={opening} />
                         {opening.funding_accepted?.map(f => (
                           <Badge key={f} variant="outline">{f}</Badge>
                         ))}
@@ -310,7 +326,10 @@ export default function CaseManagerSearch() {
                           Available: {opening.available_date || 'Immediate'}
                         </div>
                         <Button variant="outline" size="sm" asChild>
-                          <Link to={createPageUrl('OpeningDetail') + `?id=${opening.id}`}>
+                          <Link 
+                            to={createPageUrl('OpeningDetail') + `?id=${opening.id}`}
+                            onClick={() => ViewTrackingService.trackOpeningView(opening, user, 'search')}
+                          >
                             View Details
                           </Link>
                         </Button>
