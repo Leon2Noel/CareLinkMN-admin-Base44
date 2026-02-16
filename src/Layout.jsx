@@ -198,7 +198,7 @@ export default function Layout({ children, currentPageName }) {
           collapsed ? "justify-center px-3" : "px-4"
         )}>
           <Link to={createPageUrl('Home')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-br from-teal-600 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold">CL</span>
               </div>
               {!collapsed && (
@@ -221,13 +221,13 @@ export default function Layout({ children, currentPageName }) {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative",
                   isActive
-                    ? "bg-blue-50 text-blue-700"
+                    ? "bg-teal-50 text-teal-700"
                     : "text-slate-600 hover:bg-slate-100",
                   collapsed && "justify-center",
                   item.indent && !collapsed && "ml-4 text-sm"
                 )}
               >
-                <item.icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-blue-600")} />
+                <item.icon className={cn("w-5 h-5 flex-shrink-0", isActive && "text-teal-600")} />
                 {!collapsed && (
                   <>
                     <span className="font-medium">{item.name}</span>
@@ -291,7 +291,7 @@ export default function Layout({ children, currentPageName }) {
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-teal-600 to-cyan-600 text-white text-sm">
                       {getInitials(user?.full_name)}
                     </AvatarFallback>
                   </Avatar>

@@ -108,26 +108,26 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50">
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg" />
-            <span className="text-xl font-bold">CareLinkMN</span>
+            <div className="w-10 h-10 bg-teal-600 rounded-lg" />
+            <span className="text-xl font-bold text-slate-900">CareLinkMN</span>
           </div>
           
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#case-managers" className="text-slate-700 hover:text-blue-600 transition-colors">
+            <a href="#case-managers" className="text-slate-700 hover:text-teal-600 transition-colors">
               For Case Managers
             </a>
-            <a href="#providers" className="text-slate-700 hover:text-blue-600 transition-colors">
+            <a href="#providers" className="text-slate-700 hover:text-teal-600 transition-colors">
               For Providers
             </a>
-            <a href="#families" className="text-slate-700 hover:text-blue-600 transition-colors">
+            <a href="#families" className="text-slate-700 hover:text-teal-600 transition-colors">
               For Families
             </a>
-            <a href="#how-it-works" className="text-slate-700 hover:text-blue-600 transition-colors">
+            <a href="#how-it-works" className="text-slate-700 hover:text-teal-600 transition-colors">
               How It Works
             </a>
           </nav>
@@ -156,7 +156,7 @@ export default function Home() {
             }}>
               {isLoggedIn ? 'Dashboard' : 'Log In'}
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleGetStarted}>
+            <Button className="bg-teal-600 hover:bg-teal-700" onClick={handleGetStarted}>
               Get Started
             </Button>
           </div>
@@ -165,10 +165,10 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-700 opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-cyan-700 opacity-5" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Shield className="w-4 h-4" />
               Minnesota's Trusted Provider Network
             </div>
@@ -179,7 +179,7 @@ export default function Home() {
               Search by waiver, county, program model, behavioral/medical capacity, and staffing support — without the guesswork.
             </p>
             <div className="flex items-center justify-center gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
+              <Button size="lg" className="bg-teal-600 hover:bg-teal-700" asChild>
                 <Link to={createPageUrl('CaseManagerSearch')}>
                   Find Openings
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -192,7 +192,7 @@ export default function Home() {
               </Button>
             </div>
             <div className="mt-4">
-              <a href="#how-it-works" className="text-blue-600 hover:underline text-sm">
+              <a href="#how-it-works" className="text-teal-600 hover:underline text-sm">
                 How it works
               </a>
             </div>
@@ -206,8 +206,8 @@ export default function Home() {
           {features.map((feature, idx) => (
             <Card key={idx} className="border-slate-200 hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <feature.icon className="w-6 h-6 text-teal-600" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-2">{feature.title}</h3>
                 <p className="text-sm text-slate-600">{feature.description}</p>
@@ -235,10 +235,10 @@ export default function Home() {
             ].map((step, idx) => (
               <React.Fragment key={idx}>
                 <div className="flex-1 text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <step.icon className="w-8 h-8 text-blue-600" />
+                  <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <step.icon className="w-8 h-8 text-teal-600" />
                   </div>
-                  <div className="text-2xl font-bold text-blue-600 mb-2">{step.num}</div>
+                  <div className="text-2xl font-bold text-teal-600 mb-2">{step.num}</div>
                   <p className="text-sm font-medium text-slate-700">{step.title}</p>
                 </div>
                 {idx < 4 && (
@@ -260,14 +260,14 @@ export default function Home() {
         <div className="grid lg:grid-cols-3 gap-8">
           {roles.map((role, idx) => (
             <Card key={idx} className={`border-2 hover:shadow-xl transition-all bg-gradient-to-br ${
-              role.color === 'blue' ? 'from-blue-50 to-white border-blue-200' :
-              role.color === 'purple' ? 'from-purple-50 to-white border-purple-200' :
+              role.color === 'blue' ? 'from-teal-50 to-white border-teal-200' :
+              role.color === 'purple' ? 'from-cyan-50 to-white border-cyan-200' :
               'from-emerald-50 to-white border-emerald-200'
             }`}>
               <CardContent className="p-8">
                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 ${
-                  role.color === 'blue' ? 'bg-blue-600' :
-                  role.color === 'purple' ? 'bg-purple-600' : 'bg-emerald-600'
+                  role.color === 'blue' ? 'bg-teal-600' :
+                  role.color === 'purple' ? 'bg-cyan-600' : 'bg-emerald-600'
                 }`}>
                   <role.icon className="w-8 h-8 text-white" />
                 </div>
@@ -279,8 +279,8 @@ export default function Home() {
                   {role.benefits.map((benefit, bidx) => (
                     <li key={bidx} className="flex items-center gap-2 text-sm text-slate-700">
                       <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${
-                        role.color === 'blue' ? 'text-blue-600' :
-                        role.color === 'purple' ? 'text-purple-600' : 'text-emerald-600'
+                        role.color === 'blue' ? 'text-teal-600' :
+                        role.color === 'purple' ? 'text-cyan-600' : 'text-emerald-600'
                       }`} />
                       {benefit}
                     </li>
@@ -288,8 +288,8 @@ export default function Home() {
                 </ul>
                 
                 <Button className={`w-full ${
-                  role.color === 'blue' ? 'bg-blue-600 hover:bg-blue-700' :
-                  role.color === 'purple' ? 'bg-purple-600 hover:bg-purple-700' :
+                  role.color === 'blue' ? 'bg-teal-600 hover:bg-teal-700' :
+                  role.color === 'purple' ? 'bg-cyan-600 hover:bg-cyan-700' :
                   'bg-emerald-600 hover:bg-emerald-700'
                 }`} asChild>
                   <Link to={role.link}>
@@ -307,7 +307,7 @@ export default function Home() {
       <div className="bg-slate-50 py-16">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-full mb-4">
               <CheckCircle2 className="w-5 h-5" />
               Verified Badge
             </div>
@@ -326,15 +326,15 @@ export default function Home() {
               <p className="text-sm text-slate-600">Every license verified against state registries</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <FileCheck className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <FileCheck className="w-6 h-6 text-teal-600" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Compliance Checked</h3>
               <p className="text-sm text-slate-600">Automatic license-program validation</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-6 h-6 text-cyan-600" />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Truth in Placement</h3>
               <p className="text-sm text-slate-600">Real capabilities, not marketing claims</p>
@@ -344,13 +344,13 @@ export default function Home() {
       </div>
 
       {/* Footer CTA */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700">
+      <div className="bg-gradient-to-br from-teal-600 to-cyan-700">
         <div className="max-w-7xl mx-auto px-6 py-16 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-teal-100 text-lg mb-8 max-w-2xl mx-auto">
             Join Minnesota's leading provider network for compliant, efficient care coordination.
           </p>
-          <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50" onClick={handleGetStarted}>
+          <Button size="lg" className="bg-white text-teal-700 hover:bg-teal-50" onClick={handleGetStarted}>
             Create Your Account Today
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
@@ -363,7 +363,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg" />
+                <div className="w-8 h-8 bg-teal-600 rounded-lg" />
                 <span className="text-white font-bold">CareLinkMN</span>
               </div>
               <p className="text-sm">
