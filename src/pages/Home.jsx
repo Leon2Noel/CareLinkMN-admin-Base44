@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   FileCheck,
   MapPin,
-  GitMerge
+  GitMerge,
+  DoorOpen
 } from 'lucide-react';
 
 export default function Home() {
