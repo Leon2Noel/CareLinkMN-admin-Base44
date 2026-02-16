@@ -60,8 +60,8 @@ const MN_COUNTIES = [
 ];
 
 const WAIVERS = ['CADI', 'DD', 'BI', 'EW', 'AC', 'CAC'];
-const POPULATIONS = ['DD', 'MI', 'TBI', 'Elderly', 'Physical Disability'];
-const AGE_RANGES = ['0-17', '18-21', '22-64', '65+'];
+const POPULATIONS = ['Mental Health', 'Autism', 'Intellectual Disability', 'Physical Disability', 'Medical Illness', 'Chronic Illness'];
+const AGE_RANGES = ['Less than 18 yrs', '18-55 years', '55 yrs and above'];
 
 export default function Providers() {
   const queryClient = useQueryClient();
