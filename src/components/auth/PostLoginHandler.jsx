@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { getDashboardForRole } from '@/lib/auth-utils';
+import { getDashboardForRole } from './auth-utils';
 
 /**
  * PostLoginHandler - processes pending registration data after Base44 auth completes

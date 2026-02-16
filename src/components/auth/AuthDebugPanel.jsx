@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
-import { clearAuthStorage } from '@/lib/auth-utils';
+import { clearAuthStorage } from './auth-utils';
 
 /**
  * Auth Debug Panel - only shows in development

@@ -33,7 +33,7 @@ import AuthDebugPanel from '@/components/auth/AuthDebugPanel';
 import PostLoginHandler from '@/components/auth/PostLoginHandler';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { clearAuthStorage, getDashboardForRole } from '@/lib/auth-utils';
+import { clearAuthStorage, getDashboardForRole } from '@/components/auth/auth-utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -103,8 +103,9 @@ export default function Layout({ children, currentPageName }) {
         } else {
           // Only redirect to login if on protected admin page
           if (currentPageName !== 'Home') {
-            // Use window.location to avoid nested from_url
-            window.location.href = '/login';
+            // Clear any stale data and redirect to Base44 login
+            clearAuthStorage();
+            base44.auth.redirectToLogin();
           }
         }
       } catch (e) {
