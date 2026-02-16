@@ -5,21 +5,20 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import StatusBadge from '@/components/ui/StatusBadge';
+import DashboardMetrics from '@/components/provider/DashboardMetrics';
+import OpeningQuickActions from '@/components/provider/OpeningQuickActions';
+import UpcomingTasks from '@/components/provider/UpcomingTasks';
 import {
   Building2,
   FileCheck,
-  Layers,
-  MapPin,
-  DoorOpen,
-  CheckCircle2,
   AlertTriangle,
   Clock,
   ArrowRight,
   Plus,
-  Edit
+  Edit,
+  TrendingUp
 } from 'lucide-react';
 
 export default function ProviderPortal() {
@@ -69,6 +68,31 @@ export default function ProviderPortal() {
     enabled: !!orgId
   });
 
+  const { data: referrals = [] } = useQuery({
+    queryKey: ['provider-referrals', orgId],
+    queryFn: () => base44.entities.Referral.filter({ organization_id: orgId }),
+    enabled: !!orgId
+  });
+
+  const { data: subscription } = useQuery({
+    queryKey: ['provider-subscription', orgId],
+    queryFn: () => base44.entities.Subscription.filter({ organization_id: orgId }).then(r => r[0]),
+    enabled: !!orgId
+  });
+
+  const { data: messageQuota } = useQuery({
+    queryKey: ['provider-message-quota', orgId],
+    queryFn: async () => {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const quotas = await base44.entities.ProviderMessageQuota.filter({
+        provider_org_id: orgId,
+        month: currentMonth
+      });
+      return quotas[0];
+    },
+    enabled: !!orgId
+  });
+
   if (orgLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -103,6 +127,67 @@ export default function ProviderPortal() {
   const activePrograms = programs.filter(p => p.status === 'active');
   const activeSites = sites.filter(s => s.status === 'active');
   const activeOpenings = openings.filter(o => o.status === 'active');
+  
+  // Calculate metrics
+  const pendingReferrals = referrals.filter(r => r.status === 'new' || r.status === 'under_review');
+  const acceptedReferrals = referrals.filter(r => r.status === 'accepted' || r.status === 'placed');
+  const acceptanceRate = referrals.length > 0 
+    ? Math.round((acceptedReferrals.length / referrals.length) * 100)
+    : 0;
+  
+  const isPremium = subscription?.plan === 'professional' || subscription?.plan === 'enterprise';
+  const messagesLimit = isPremium ? 10 : 0;
+  const messagesUsed = messageQuota?.initiated_count || 0;
+
+  const metrics = {
+    activeOpenings: activeOpenings.length,
+    pendingReferrals: pendingReferrals.length,
+    acceptanceRate,
+    messagesUsed,
+    messagesLimit,
+    openingsTrend: 5, // Could calculate from historical data
+    acceptanceRateTrend: 3
+  };
+
+  // Generate upcoming tasks
+  const tasks = [];
+  
+  pendingReferrals.slice(0, 3).forEach(ref => {
+    tasks.push({
+      type: 'referral',
+      priority: ref.urgency === 'crisis' ? 'urgent' : ref.urgency === 'urgent' ? 'high' : 'normal',
+      title: `Review Referral for ${ref.client_county}`,
+      description: `New ${ref.urgency} referral awaiting your response`,
+      due_date: ref.desired_start_date,
+      link: createPageUrl('ReferralTracking')
+    });
+  });
+
+  licenses.filter(l => {
+    const expiryDate = new Date(l.expiration_date);
+    const today = new Date();
+    const daysUntilExpiry = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+    return daysUntilExpiry <= 60 && daysUntilExpiry > 0;
+  }).forEach(license => {
+    tasks.push({
+      type: 'license',
+      priority: 'high',
+      title: 'License Renewal Due Soon',
+      description: `License ${license.license_number} expires soon`,
+      due_date: license.expiration_date,
+      link: createPageUrl('ProviderLicenses')
+    });
+  });
+
+  if (activeOpenings.length === 0 && activeSites.length > 0) {
+    tasks.push({
+      type: 'opening',
+      priority: 'normal',
+      title: 'Create Your First Opening',
+      description: 'Start receiving referrals by posting an opening',
+      link: createPageUrl('Openings')
+    });
+  }
 
   // Calculate readiness score
   const readinessChecks = {
@@ -221,6 +306,11 @@ export default function ProviderPortal() {
           </div>
         )}
 
+        {/* Dashboard Metrics */}
+        <div className="mb-6">
+          <DashboardMetrics metrics={metrics} />
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Readiness Score */}
           <div className="lg:col-span-1">
@@ -268,54 +358,11 @@ export default function ProviderPortal() {
             </Card>
           </div>
 
-          {/* Quick Stats */}
+          {/* Opening Management & Tasks */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="p-4 text-center">
-                <FileCheck className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-slate-900">{licenses.length}</p>
-                <p className="text-xs text-slate-500">Licenses</p>
-              </Card>
-              <Card className="p-4 text-center">
-                <Layers className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-slate-900">{programs.length}</p>
-                <p className="text-xs text-slate-500">Programs</p>
-              </Card>
-              <Card className="p-4 text-center">
-                <MapPin className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-slate-900">{sites.length}</p>
-                <p className="text-xs text-slate-500">Sites</p>
-              </Card>
-              <Card className="p-4 text-center">
-                <DoorOpen className="w-8 h-8 text-amber-600 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-slate-900">{activeOpenings.length}</p>
-                <p className="text-xs text-slate-500">Active Openings</p>
-              </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" disabled>
-                  <Plus className="w-4 h-4 mr-3" />
-                  Add License
-                  <Badge className="ml-auto bg-slate-200 text-slate-600">Coming Soon</Badge>
-                </Button>
-                <Button variant="outline" className="w-full justify-start" disabled>
-                  <Plus className="w-4 h-4 mr-3" />
-                  Create Opening
-                  <Badge className="ml-auto bg-slate-200 text-slate-600">Coming Soon</Badge>
-                </Button>
-                <Button variant="outline" className="w-full justify-start" disabled>
-                  <Edit className="w-4 h-4 mr-3" />
-                  Update Profile
-                  <Badge className="ml-auto bg-slate-200 text-slate-600">Coming Soon</Badge>
-                </Button>
-              </CardContent>
-            </Card>
+            <OpeningQuickActions openings={openings} />
+            
+            <UpcomingTasks tasks={tasks} />
 
             {/* Next Steps */}
             <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
