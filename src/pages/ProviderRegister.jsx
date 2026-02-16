@@ -73,11 +73,47 @@ export default function ProviderRegister() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Organization.create(data),
+    mutationFn: async (data) => {
+      // Check if user is authenticated
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        // Store data and redirect to login
+        localStorage.setItem('pending_org_registration', JSON.stringify(data));
+        base44.auth.redirectToLogin(window.location.origin + createPageUrl('ProviderRegister'));
+        return;
+      }
+      
+      // Create organization linked to current user
+      const user = await base44.auth.me();
+      return await base44.entities.Organization.create({
+        ...data,
+        primary_contact_email: user.email,
+        created_by: user.email
+      });
+    },
     onSuccess: (org) => {
-      navigate(createPageUrl('ProviderPortal') + `?org_id=${org.id}`);
+      if (org) {
+        localStorage.removeItem('pending_org_registration');
+        navigate(createPageUrl('ProviderPortal') + `?org_id=${org.id}`);
+      }
     }
   });
+
+  // Load pending registration data if user just logged in
+  React.useEffect(() => {
+    const loadPendingData = async () => {
+      const pending = localStorage.getItem('pending_org_registration');
+      if (pending) {
+        try {
+          const data = JSON.parse(pending);
+          setFormData(prev => ({ ...prev, ...data }));
+        } catch (e) {
+          console.error('Failed to load pending data:', e);
+        }
+      }
+    };
+    loadPendingData();
+  }, []);
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));

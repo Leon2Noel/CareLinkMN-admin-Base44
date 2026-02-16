@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,18 +120,31 @@ export default function Register() {
     setIsSubmitting(true);
     
     try {
-      // Here you would call your registration API
-      // For now, simulating success
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Create user in Base44 system
+      const fullName = `${formData.first_name} ${formData.last_name}`.trim();
       
+      // Store registration data temporarily
+      localStorage.setItem('pending_registration', JSON.stringify({
+        full_name: fullName,
+        email: formData.email,
+        role: role,
+        timestamp: Date.now()
+      }));
+      
+      // Redirect to Base44 login/signup - Base44 handles user creation and email verification
       setShowVerification(true);
+      
+      // After showing message, redirect to login
+      setTimeout(() => {
+        base44.auth.redirectToLogin(window.location.origin + createPageUrl('Home'));
+      }, 3000);
+      
     } catch (error) {
       if (error.message?.includes('exists')) {
         setErrors({ email: 'Account already exists. Please log in instead.' });
       } else {
         setErrors({ general: 'Something went wrong. Please try again.' });
       }
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -143,14 +157,13 @@ export default function Register() {
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Check Your Inbox</h2>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Almost There!</h2>
             <p className="text-slate-600 mb-6">
-              We've sent a verification email to <strong>{formData.email}</strong>. 
-              Click the link to verify your account.
+              Redirecting you to complete your account setup. You'll receive a verification email at <strong>{formData.email}</strong>.
             </p>
-            <Button variant="outline" onClick={() => navigate(createPageUrl('Login'))}>
-              Go to Login
-            </Button>
+            <p className="text-sm text-slate-500">
+              Redirecting in a moment...
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -332,9 +345,13 @@ export default function Register() {
 
                 <p className="text-center text-sm text-slate-600">
                   Already have an account?{' '}
-                  <Link to={createPageUrl('Login')} className="text-blue-600 hover:underline font-medium">
+                  <button 
+                    type="button"
+                    onClick={() => base44.auth.redirectToLogin()} 
+                    className="text-blue-600 hover:underline font-medium"
+                  >
                     Log in
-                  </Link>
+                  </button>
                 </p>
               </form>
             </CardContent>
