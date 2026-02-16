@@ -38,11 +38,48 @@ const POPULATIONS = ['DD', 'MI', 'TBI', 'Elderly', 'Physical Disability'];
 const AGE_RANGES = ['0-17', '18-21', '22-64', '65+'];
 
 const LICENSE_TYPES = [
-  { code: '245D_BASIC', name: '245D Basic License', category: 'DHS' },
-  { code: '245D_INTENSIVE', name: '245D Intensive Services', category: 'DHS' },
-  { code: 'ALF', name: 'Assisted Living Facility', category: 'MDH' },
-  { code: 'ALD', name: 'Assisted Living with Dementia', category: 'MDH' },
-  { code: 'RESPITE', name: 'Respite Care', category: 'DHS' }
+  // 245D Program Licenses (DHS)
+  { code: '245D_BASIC', name: 'MN Rule 245D - Basic Services', category: 'DHS', description: 'Basic residential or day services' },
+  { code: '245D_INTENSIVE', name: 'MN Rule 245D - Intensive Services', category: 'DHS', description: 'Intensive behavioral or medical support' },
+  { code: '245D_FOSTER_CARE', name: 'MN Rule 245D - Foster Care', category: 'DHS', description: 'Adult foster care homes' },
+  { code: '245D_FAMILY_FOSTER_CARE', name: 'MN Rule 245D - Family Foster Care', category: 'DHS', description: 'Family-based foster care' },
+  { code: '245D_SEMI_INDEPENDENT', name: 'MN Rule 245D - Semi-Independent Living', category: 'DHS', description: 'Semi-independent living services' },
+  
+  // Assisted Living (MDH)
+  { code: 'ALF', name: 'Assisted Living Facility (144G.01-08)', category: 'MDH', description: 'General assisted living' },
+  { code: 'ALD', name: 'Assisted Living with Dementia Care (144G.08)', category: 'MDH', description: 'Specialized dementia care' },
+  
+  // Housing with Services (MDH)
+  { code: 'HWS_BASIC', name: 'Housing with Services - Basic', category: 'MDH', description: 'Basic services establishment' },
+  { code: 'HWS_COMPREHENSIVE', name: 'Housing with Services - Comprehensive', category: 'MDH', description: 'Comprehensive services' },
+  
+  // Adult Day Services (DHS)
+  { code: 'ADULT_DAY_CARE', name: 'Adult Day Care Center (245A.03)', category: 'DHS', description: 'Day programming and supervision' },
+  { code: 'ADULT_DAY_CENTER', name: 'Adult Day Service Center', category: 'DHS', description: 'Structured day activities' },
+  
+  // Home Care (MDH)
+  { code: 'HOME_CARE', name: 'Home Care Provider (144A.44)', category: 'MDH', description: 'In-home nursing and care services' },
+  { code: 'COMPREHENSIVE_HOME_CARE', name: 'Comprehensive Home Care', category: 'MDH', description: 'Full home care services' },
+  
+  // Respite Care (DHS)
+  { code: 'RESPITE_RESIDENTIAL', name: 'Residential Respite Care', category: 'DHS', description: 'Short-term residential respite' },
+  { code: 'RESPITE_INHOME', name: 'In-Home Respite Care', category: 'DHS', description: 'Home-based respite services' },
+  
+  // Mental Health Services (DHS)
+  { code: 'MENTAL_HEALTH_RTC', name: 'Mental Health Residential Treatment (245I)', category: 'DHS', description: 'Residential mental health treatment' },
+  { code: 'CRISIS_RESIDENTIAL', name: 'Crisis Residential Services', category: 'DHS', description: 'Short-term crisis stabilization' },
+  
+  // Specialized Programs
+  { code: 'CUSTOMIZED_LIVING', name: 'Customized Living Services (245D.33)', category: 'DHS', description: 'Individualized residential services' },
+  { code: 'CORPORATE_FOSTER_CARE', name: 'Corporate Adult Foster Care', category: 'DHS', description: 'Corporate foster care model' },
+  { code: 'COMMUNITY_RESIDENTIAL', name: 'Community Residential Setting (245D)', category: 'DHS', description: 'Community-based residential' },
+  { code: 'INTEGRATED_COMMUNITY_SUPPORTS', name: 'Integrated Community Supports (ICS)', category: 'DHS', description: 'Community support services' },
+  
+  // Elderly and Disability Services
+  { code: 'ELDERLY_WAIVER', name: 'Elderly Waiver Services', category: 'DHS', description: 'Services for elderly populations' },
+  { code: 'TBI_WAIVER', name: 'TBI Waiver Services', category: 'DHS', description: 'Traumatic brain injury services' },
+  { code: 'DD_WAIVER', name: 'Developmental Disabilities Waiver', category: 'DHS', description: 'DD waiver program services' },
+  { code: 'CADI_WAIVER', name: 'CADI Waiver Services', category: 'DHS', description: 'CADI waiver services' }
 ];
 
 const STEPS = [
@@ -416,10 +453,13 @@ Format your response as JSON with this structure:
                     <SelectTrigger>
                       <SelectValue placeholder="Select license type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-80">
                       {LICENSE_TYPES.map(lt => (
                         <SelectItem key={lt.code} value={lt.code}>
-                          {lt.name} ({lt.category})
+                          <div className="flex flex-col">
+                            <span className="font-medium">{lt.name}</span>
+                            <span className="text-xs text-slate-500">{lt.description}</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
