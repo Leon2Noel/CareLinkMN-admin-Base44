@@ -10,11 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical, CheckCircle, XCircle, Pause, Play, Edit } from 'lucide-react';
+import { MoreVertical, CheckCircle, XCircle, Pause, Play, Edit, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import StatusBadge from '@/components/ui/StatusBadge';
+import FreshnessIndicator from './FreshnessIndicator';
+import ConfirmAvailabilityButton from './ConfirmAvailabilityButton';
 
 export default function OpeningQuickActions({ openings = [] }) {
   const queryClient = useQueryClient();
@@ -63,13 +65,18 @@ export default function OpeningQuickActions({ openings = [] }) {
                   <p className="font-medium text-sm text-slate-900 truncate">
                     {opening.title}
                   </p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <StatusBadge status={opening.status} size="sm" />
+                    <FreshnessIndicator opening={opening} />
                     <span className="text-xs text-slate-500">
                       {opening.spots_available} spot{opening.spots_available !== 1 ? 's' : ''}
                     </span>
                   </div>
                 </div>
+
+                {opening.status === 'active' && (
+                  <ConfirmAvailabilityButton opening={opening} size="sm" variant="ghost" />
+                )}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
