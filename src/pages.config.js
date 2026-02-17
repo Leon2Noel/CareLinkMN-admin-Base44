@@ -52,6 +52,7 @@ import AdminAnalytics from './pages/AdminAnalytics';
 import AuditLogs from './pages/AuditLogs';
 import CMAnalytics from './pages/CMAnalytics';
 import CMOverview from './pages/CMOverview';
+import CMReferralsDashboard from './pages/CMReferralsDashboard';
 import Capabilities from './pages/Capabilities';
 import CaseManagerSearch from './pages/CaseManagerSearch';
 import Compliance from './pages/Compliance';
@@ -91,7 +92,9 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import CMReferralsDashboard from './pages/CMReferralsDashboard';
+import ProviderOpeningsManager from './pages/ProviderOpeningsManager';
+import ProviderReferralsView from './pages/ProviderReferralsView';
+import ProviderProfileSettings from './pages/ProviderProfileSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -101,6 +104,7 @@ export const PAGES = {
     "AuditLogs": AuditLogs,
     "CMAnalytics": CMAnalytics,
     "CMOverview": CMOverview,
+    "CMReferralsDashboard": CMReferralsDashboard,
     "Capabilities": Capabilities,
     "CaseManagerSearch": CaseManagerSearch,
     "Compliance": Compliance,
@@ -140,7 +144,9 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "CMReferralsDashboard": CMReferralsDashboard,
+    "ProviderOpeningsManager": ProviderOpeningsManager,
+    "ProviderReferralsView": ProviderReferralsView,
+    "ProviderProfileSettings": ProviderProfileSettings,
 }
 
 export const pagesConfig = {
