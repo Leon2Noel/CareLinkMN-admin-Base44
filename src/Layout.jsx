@@ -95,10 +95,15 @@ export default function Layout({ children, currentPageName }) {
             }
           }
         } else {
-          // Only redirect to login if on protected admin page (not Home)
-          if (currentPageName !== 'Home' && currentPageName !== 'GetStarted' && 
-              currentPageName !== 'Register' && currentPageName !== 'CaseManagerSearch' &&
-              currentPageName !== 'ProviderRegister' && currentPageName !== 'ProviderOnboarding') {
+          // Public pages that don't require auth
+          const publicPages = [
+            'Home', 'GetStarted', 'Register', 'CaseManagerSearch',
+            'ProviderRegister', 'ProviderOnboarding', 'OpeningDetail'
+          ];
+          
+          // Only redirect if on protected page
+          if (!publicPages.includes(currentPageName)) {
+            console.log('🔒 Not authenticated, redirecting from:', currentPageName);
             clearAuthStorage();
             window.location.href = '/';
           }

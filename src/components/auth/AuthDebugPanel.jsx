@@ -38,7 +38,7 @@ export default function AuthDebugPanel() {
 
   const handleForceLogout = () => {
     clearAuthStorage();
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   // Only show in development
