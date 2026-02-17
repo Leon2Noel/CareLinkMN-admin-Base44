@@ -61,6 +61,7 @@ const navItems = [
   { name: 'Config & Weights', icon: GitMerge, page: 'MatchingConfig', indent: true },
   { name: 'Search Simulation', icon: GitMerge, page: 'MatchingSimulation', indent: true },
   { name: 'Referral Tracking', icon: GitMerge, page: 'ReferralTracking' },
+  { name: 'Analytics', icon: Sparkles, page: 'AdminAnalytics' },
   { name: 'Notifications', icon: Bell, page: 'Notifications' },
   { name: 'Funding', icon: Wallet, page: 'Funding' },
   { name: 'Compliance', icon: ShieldCheck, page: 'Compliance', badge: 3 },

@@ -49,13 +49,16 @@
  */
 import AIAssistant from './pages/AIAssistant';
 import AuditLogs from './pages/AuditLogs';
+import CMOverview from './pages/CMOverview';
 import Capabilities from './pages/Capabilities';
 import CaseManagerSearch from './pages/CaseManagerSearch';
 import Compliance from './pages/Compliance';
 import DemoSetup from './pages/DemoSetup';
+import FamilyOverview from './pages/FamilyOverview';
 import Funding from './pages/Funding';
 import GetStarted from './pages/GetStarted';
 import Home from './pages/Home';
+import HospitalOverview from './pages/HospitalOverview';
 import LicenseMapping from './pages/LicenseMapping';
 import LicenseTaxonomy from './pages/LicenseTaxonomy';
 import Licenses from './pages/Licenses';
@@ -86,22 +89,24 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import CMOverview from './pages/CMOverview';
-import FamilyOverview from './pages/FamilyOverview';
-import HospitalOverview from './pages/HospitalOverview';
+import AdminAnalytics from './pages/AdminAnalytics';
+import CMAnalytics from './pages/CMAnalytics';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIAssistant": AIAssistant,
     "AuditLogs": AuditLogs,
+    "CMOverview": CMOverview,
     "Capabilities": Capabilities,
     "CaseManagerSearch": CaseManagerSearch,
     "Compliance": Compliance,
     "DemoSetup": DemoSetup,
+    "FamilyOverview": FamilyOverview,
     "Funding": Funding,
     "GetStarted": GetStarted,
     "Home": Home,
+    "HospitalOverview": HospitalOverview,
     "LicenseMapping": LicenseMapping,
     "LicenseTaxonomy": LicenseTaxonomy,
     "Licenses": Licenses,
@@ -132,9 +137,8 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "CMOverview": CMOverview,
-    "FamilyOverview": FamilyOverview,
-    "HospitalOverview": HospitalOverview,
+    "AdminAnalytics": AdminAnalytics,
+    "CMAnalytics": CMAnalytics,
 }
 
 export const pagesConfig = {
