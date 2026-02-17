@@ -80,8 +80,11 @@ import ProviderAnalytics from './pages/ProviderAnalytics';
 import ProviderDetail from './pages/ProviderDetail';
 import ProviderLicenses from './pages/ProviderLicenses';
 import ProviderOnboarding from './pages/ProviderOnboarding';
+import ProviderOpeningsManager from './pages/ProviderOpeningsManager';
 import ProviderOverview from './pages/ProviderOverview';
 import ProviderPortal from './pages/ProviderPortal';
+import ProviderProfileSettings from './pages/ProviderProfileSettings';
+import ProviderReferralsView from './pages/ProviderReferralsView';
 import ProviderRegister from './pages/ProviderRegister';
 import Providers from './pages/Providers';
 import ReferralBuilder from './pages/ReferralBuilder';
@@ -92,9 +95,6 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import ProviderOpeningsManager from './pages/ProviderOpeningsManager';
-import ProviderReferralsView from './pages/ProviderReferralsView';
-import ProviderProfileSettings from './pages/ProviderProfileSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -132,8 +132,11 @@ export const PAGES = {
     "ProviderDetail": ProviderDetail,
     "ProviderLicenses": ProviderLicenses,
     "ProviderOnboarding": ProviderOnboarding,
+    "ProviderOpeningsManager": ProviderOpeningsManager,
     "ProviderOverview": ProviderOverview,
     "ProviderPortal": ProviderPortal,
+    "ProviderProfileSettings": ProviderProfileSettings,
+    "ProviderReferralsView": ProviderReferralsView,
     "ProviderRegister": ProviderRegister,
     "Providers": Providers,
     "ReferralBuilder": ReferralBuilder,
@@ -144,9 +147,6 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "ProviderOpeningsManager": ProviderOpeningsManager,
-    "ProviderReferralsView": ProviderReferralsView,
-    "ProviderProfileSettings": ProviderProfileSettings,
 }
 
 export const pagesConfig = {
