@@ -13,6 +13,10 @@ export default function PostLoginHandler() {
 
   const handlePostLogin = async () => {
     try {
+      // Check if user is authenticated first
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) return;
+
       // Check if there's pending registration data
       const pendingData = localStorage.getItem('pending_registration');
       if (!pendingData) return;
@@ -25,10 +29,6 @@ export default function PostLoginHandler() {
         return;
       }
 
-      // Check if user is authenticated
-      const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) return;
-
       const user = await base44.auth.me();
 
       // Update user profile with role if not already set
@@ -40,20 +40,23 @@ export default function PostLoginHandler() {
           });
           
           console.log('✅ User profile updated with role:', registration.primary_role);
+          
+          // Reload user data
+          const updatedUser = await base44.auth.me();
+          
+          // Clear pending registration
+          localStorage.removeItem('pending_registration');
+          
+          // Redirect to appropriate dashboard
+          const dashboard = getDashboardForRole(updatedUser.primary_role);
+          window.location.replace(dashboard);
         } catch (error) {
           console.error('Failed to update user profile:', error);
+          localStorage.removeItem('pending_registration');
         }
-      }
-
-      // Clear pending registration
-      localStorage.removeItem('pending_registration');
-      
-      // Redirect to appropriate dashboard if still on login/register page
-      if (window.location.pathname === '/login' || 
-          window.location.pathname === '/register' ||
-          window.location.pathname === '/') {
-        const dashboard = getDashboardForRole(registration.primary_role || user.primary_role);
-        window.location.href = dashboard;
+      } else {
+        // User already has role, just clear pending data
+        localStorage.removeItem('pending_registration');
       }
     } catch (error) {
       console.error('Post-login handler error:', error);

@@ -88,46 +88,44 @@ export default function Layout({ children, currentPageName }) {
           setUser(userData);
           
           // Role-based redirect logic for admin pages
-          if (userData.primary_role && userData.primary_role !== 'admin' && currentPageName !== 'Home' && currentPageName !== 'Login') {
+          if (userData.primary_role && userData.primary_role !== 'admin' && currentPageName !== 'Home') {
             const correctDashboard = getDashboardForRole(userData.primary_role);
             if (correctDashboard && correctDashboard !== window.location.pathname) {
               window.location.href = correctDashboard;
             }
           }
         } else {
-          // Only redirect to login if on protected admin page
-          if (currentPageName !== 'Home') {
-            // Clear any stale data and redirect to Base44 login
+          // Only redirect to login if on protected admin page (not Home)
+          if (currentPageName !== 'Home' && currentPageName !== 'GetStarted' && 
+              currentPageName !== 'Register' && currentPageName !== 'CaseManagerSearch' &&
+              currentPageName !== 'ProviderRegister' && currentPageName !== 'ProviderOnboarding') {
             clearAuthStorage();
-            base44.auth.redirectToLogin();
+            window.location.href = '/';
           }
         }
       } catch (e) {
         console.error('Auth check failed:', e);
-        base44.auth.redirectToLogin(window.location.pathname);
+        clearAuthStorage();
+        window.location.href = '/';
       }
     };
     loadUser();
   }, [currentPageName]);
 
   const handleLogout = async () => {
+    // Clear local state immediately
+    setUser(null);
+    clearAuthStorage();
+    
     try {
-      // Clear all auth storage first
-      clearAuthStorage();
-      
-      // Call base44 logout - don't pass redirect URL, let Base44 handle it
+      // Call base44 logout
       await base44.auth.logout();
-      
-      // After logout completes, redirect to home
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 100);
     } catch (error) {
       console.error('Logout error:', error);
-      // Force logout anyway
-      clearAuthStorage();
-      window.location.href = '/';
     }
+    
+    // Hard redirect to home page (no parameters)
+    window.location.replace('/');
   };
 
   const getInitials = (name) => {
