@@ -113,19 +113,27 @@ export default function Layout({ children, currentPageName }) {
   }, [currentPageName]);
 
   const handleLogout = async () => {
+    console.log('🔓 Logout initiated');
+    
     // Clear local state immediately
     setUser(null);
+    
+    // Clear all auth storage FIRST
     clearAuthStorage();
     
+    // Call base44 logout WITHOUT redirect - we'll handle it ourselves
     try {
-      // Call base44 logout
-      await base44.auth.logout();
+      // Pass empty string to prevent base44 from doing its own redirect
+      await base44.auth.logout('');
     } catch (error) {
       console.error('Logout error:', error);
     }
     
-    // Hard redirect to home page (no parameters)
-    window.location.replace('/');
+    // Force reload to home page (clears all state)
+    console.log('🔓 Redirecting to home page');
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
   };
 
   const getInitials = (name) => {
