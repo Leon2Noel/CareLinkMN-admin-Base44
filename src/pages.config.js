@@ -48,7 +48,9 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIAssistant from './pages/AIAssistant';
+import AdminAnalytics from './pages/AdminAnalytics';
 import AuditLogs from './pages/AuditLogs';
+import CMAnalytics from './pages/CMAnalytics';
 import CMOverview from './pages/CMOverview';
 import Capabilities from './pages/Capabilities';
 import CaseManagerSearch from './pages/CaseManagerSearch';
@@ -89,14 +91,15 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
-import AdminAnalytics from './pages/AdminAnalytics';
-import CMAnalytics from './pages/CMAnalytics';
+import CMReferralsDashboard from './pages/CMReferralsDashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIAssistant": AIAssistant,
+    "AdminAnalytics": AdminAnalytics,
     "AuditLogs": AuditLogs,
+    "CMAnalytics": CMAnalytics,
     "CMOverview": CMOverview,
     "Capabilities": Capabilities,
     "CaseManagerSearch": CaseManagerSearch,
@@ -137,8 +140,7 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
-    "AdminAnalytics": AdminAnalytics,
-    "CMAnalytics": CMAnalytics,
+    "CMReferralsDashboard": CMReferralsDashboard,
 }
 
 export const pagesConfig = {
