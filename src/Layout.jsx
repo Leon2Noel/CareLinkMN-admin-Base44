@@ -88,16 +88,9 @@ export default function Layout({ children, currentPageName }) {
           setUser(userData);
           
           // Role-based redirect logic for admin pages
-          if (userData.primary_role && userData.primary_role !== 'admin' && currentPageName !== 'Home') {
-            const roleRedirects = {
-              provider: createPageUrl('ProviderOverview'),
-              cm: createPageUrl('CMOverview'),
-              family: createPageUrl('FamilyOverview'),
-              guardian: createPageUrl('FamilyOverview'),
-              hospital: createPageUrl('HospitalOverview')
-            };
-            const correctDashboard = roleRedirects[userData.primary_role];
-            if (correctDashboard) {
+          if (userData.primary_role && userData.primary_role !== 'admin' && currentPageName !== 'Home' && currentPageName !== 'Login') {
+            const correctDashboard = getDashboardForRole(userData.primary_role);
+            if (correctDashboard && correctDashboard !== window.location.pathname) {
               window.location.href = correctDashboard;
             }
           }
@@ -122,11 +115,13 @@ export default function Layout({ children, currentPageName }) {
       // Clear all auth storage first
       clearAuthStorage();
       
-      // Call base44 logout (this should clear server-side session)
-      await base44.auth.logout('/');
+      // Call base44 logout - don't pass redirect URL, let Base44 handle it
+      await base44.auth.logout();
       
-      // Force reload to clear any cached state
-      window.location.href = '/';
+      // After logout completes, redirect to home
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
     } catch (error) {
       console.error('Logout error:', error);
       // Force logout anyway

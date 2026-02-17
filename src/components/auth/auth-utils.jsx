@@ -14,12 +14,12 @@
  */
 export function getDashboardForRole(role) {
   const roleMap = {
-    'provider': '/provider/overview',
-    'cm': '/cm/search',
-    'case_manager': '/cm/search',
-    'family': '/family/overview',
-    'guardian': '/family/overview',
-    'hospital': '/hospital/overview',
+    'provider': '/provider-overview',
+    'cm': '/cm-overview',
+    'case_manager': '/cm-overview',
+    'family': '/family-overview',
+    'guardian': '/family-overview',
+    'hospital': '/hospital-overview',
     'admin': '/overview'
   };
   
