@@ -95,6 +95,7 @@ import Sites from './pages/Sites';
 import SubscriptionGating from './pages/SubscriptionGating';
 import Subscriptions from './pages/Subscriptions';
 import UsersRoles from './pages/UsersRoles';
+import PublicOpenings from './pages/PublicOpenings';
 import __Layout from './Layout.jsx';
 
 
@@ -147,6 +148,7 @@ export const PAGES = {
     "SubscriptionGating": SubscriptionGating,
     "Subscriptions": Subscriptions,
     "UsersRoles": UsersRoles,
+    "PublicOpenings": PublicOpenings,
 }
 
 export const pagesConfig = {
