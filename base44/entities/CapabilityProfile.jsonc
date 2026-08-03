@@ -1,0 +1,228 @@
+{
+  "name": "CapabilityProfile",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "site_id": {
+      "type": "string",
+      "description": "If site-specific, otherwise org-level default"
+    },
+    "program_activation_id": {
+      "type": "string",
+      "description": "If program-specific"
+    },
+    "profile_type": {
+      "type": "string",
+      "enum": [
+        "organization_default",
+        "program_default",
+        "site_specific"
+      ],
+      "default": "organization_default"
+    },
+    "behavioral": {
+      "type": "object",
+      "properties": {
+        "aggression_physical": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "aggression_verbal": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "self_injury": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "property_destruction": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "elopement_risk": {
+          "type": "string",
+          "enum": [
+            "none",
+            "low",
+            "moderate",
+            "high"
+          ]
+        },
+        "sexual_behaviors": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mild",
+            "moderate",
+            "severe"
+          ]
+        },
+        "substance_use": {
+          "type": "boolean",
+          "default": false
+        },
+        "pica": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "medical": {
+      "type": "object",
+      "properties": {
+        "tube_feeding": {
+          "type": "boolean",
+          "default": false
+        },
+        "ventilator": {
+          "type": "boolean",
+          "default": false
+        },
+        "tracheostomy": {
+          "type": "boolean",
+          "default": false
+        },
+        "dialysis": {
+          "type": "boolean",
+          "default": false
+        },
+        "oxygen": {
+          "type": "boolean",
+          "default": false
+        },
+        "wound_care": {
+          "type": "string",
+          "enum": [
+            "none",
+            "basic",
+            "advanced"
+          ]
+        },
+        "medication_administration": {
+          "type": "string",
+          "enum": [
+            "self",
+            "reminder",
+            "full_admin"
+          ]
+        },
+        "diabetic_care": {
+          "type": "string",
+          "enum": [
+            "none",
+            "monitoring",
+            "insulin"
+          ]
+        },
+        "seizure_management": {
+          "type": "string",
+          "enum": [
+            "none",
+            "monitoring",
+            "intervention"
+          ]
+        },
+        "mobility_assistance": {
+          "type": "string",
+          "enum": [
+            "independent",
+            "minimal",
+            "moderate",
+            "total"
+          ]
+        }
+      }
+    },
+    "staffing": {
+      "type": "object",
+      "properties": {
+        "ratio_day": {
+          "type": "string",
+          "description": "e.g. 1:4"
+        },
+        "ratio_night": {
+          "type": "string"
+        },
+        "awake_overnight": {
+          "type": "boolean",
+          "default": false
+        },
+        "rn_on_staff": {
+          "type": "boolean",
+          "default": false
+        },
+        "lpn_on_staff": {
+          "type": "boolean",
+          "default": false
+        },
+        "behavioral_specialist": {
+          "type": "boolean",
+          "default": false
+        },
+        "one_to_one_available": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "wheelchair_accessible": {
+          "type": "boolean",
+          "default": false
+        },
+        "single_story": {
+          "type": "boolean",
+          "default": false
+        },
+        "secured_unit": {
+          "type": "boolean",
+          "default": false
+        },
+        "private_rooms": {
+          "type": "boolean",
+          "default": false
+        },
+        "shared_rooms": {
+          "type": "boolean",
+          "default": false
+        },
+        "sensory_room": {
+          "type": "boolean",
+          "default": false
+        },
+        "outdoor_space": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "required": [
+    "organization_id",
+    "profile_type"
+  ]
+}

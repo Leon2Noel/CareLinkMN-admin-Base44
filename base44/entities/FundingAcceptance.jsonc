@@ -1,0 +1,55 @@
+{
+  "name": "FundingAcceptance",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "program_activation_id": {
+      "type": "string",
+      "description": "If program-specific"
+    },
+    "opening_id": {
+      "type": "string",
+      "description": "If opening-specific"
+    },
+    "funding_source": {
+      "type": "string",
+      "enum": [
+        "CADI",
+        "DD",
+        "BI",
+        "EW",
+        "AC",
+        "CAC",
+        "MA_FFS",
+        "MA_MCO",
+        "VRS",
+        "Private_Pay",
+        "County_Contract",
+        "Other"
+      ]
+    },
+    "is_accepted": {
+      "type": "boolean",
+      "default": true
+    },
+    "rate_negotiated": {
+      "type": "number"
+    },
+    "contract_number": {
+      "type": "string"
+    },
+    "contract_expiry": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "funding_source"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "thread_id": {
+      "type": "string"
+    },
+    "sender_user_id": {
+      "type": "string"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "provider",
+        "case_manager",
+        "guardian",
+        "admin"
+      ]
+    },
+    "body": {
+      "type": "string"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "File URLs"
+    },
+    "is_system_message": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "thread_id",
+    "sender_user_id",
+    "sender_role",
+    "body"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "LicenseCategory",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Category code e.g. MDH_144G, DHS_245D"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "issuing_authority": {
+      "type": "string",
+      "enum": [
+        "MDH",
+        "DHS"
+      ],
+      "description": "Minnesota Department of Health or Human Services"
+    },
+    "description": {
+      "type": "string"
+    },
+    "statute_reference": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "code",
+    "name",
+    "issuing_authority"
+  ]
+}

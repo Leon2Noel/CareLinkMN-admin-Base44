@@ -1,0 +1,227 @@
+{
+  "name": "Referral",
+  "type": "object",
+  "properties": {
+    "opening_id": {
+      "type": "string"
+    },
+    "organization_id": {
+      "type": "string"
+    },
+    "site_id": {
+      "type": "string"
+    },
+    "referral_source": {
+      "type": "string",
+      "enum": [
+        "case_manager",
+        "family",
+        "self",
+        "hospital",
+        "other"
+      ]
+    },
+    "referrer_name": {
+      "type": "string"
+    },
+    "referrer_email": {
+      "type": "string"
+    },
+    "referrer_phone": {
+      "type": "string"
+    },
+    "referrer_organization": {
+      "type": "string"
+    },
+    "client_initials": {
+      "type": "string"
+    },
+    "client_age": {
+      "type": "number"
+    },
+    "client_gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "other"
+      ]
+    },
+    "client_county": {
+      "type": "string"
+    },
+    "funding_source": {
+      "type": "string"
+    },
+    "diagnosis_summary": {
+      "type": "string"
+    },
+    "behavioral_summary": {
+      "type": "string"
+    },
+    "medical_summary": {
+      "type": "string"
+    },
+    "support_needs": {
+      "type": "string"
+    },
+    "client_preferences": {
+      "type": "object",
+      "properties": {
+        "pets_allowed": {
+          "type": "boolean",
+          "description": "Client needs pets allowed"
+        },
+        "community_type": {
+          "type": "string",
+          "enum": [
+            "mixed",
+            "females_only",
+            "males_only",
+            "any"
+          ],
+          "description": "Preferred community gender composition"
+        },
+        "private_room": {
+          "type": "boolean",
+          "description": "Requires private room"
+        },
+        "smoking_environment": {
+          "type": "string",
+          "enum": [
+            "non_smoking",
+            "smoking_allowed",
+            "no_preference"
+          ],
+          "default": "no_preference"
+        },
+        "dietary_restrictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Special dietary needs"
+        },
+        "cultural_considerations": {
+          "type": "string",
+          "description": "Cultural or religious preferences"
+        },
+        "preferred_location_proximity": {
+          "type": "number",
+          "description": "Maximum distance in miles from client's county center"
+        },
+        "language_needs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Languages client speaks"
+        }
+      }
+    },
+    "specific_needs": {
+      "type": "object",
+      "properties": {
+        "transportation_to_services": {
+          "type": "boolean"
+        },
+        "specialized_therapy_access": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "PT, OT, speech, behavioral, etc."
+        },
+        "day_program_access": {
+          "type": "boolean"
+        },
+        "wheelchair_accessible": {
+          "type": "boolean"
+        },
+        "assistive_technology_needed": {
+          "type": "string"
+        }
+      }
+    },
+    "urgency": {
+      "type": "string",
+      "enum": [
+        "routine",
+        "urgent",
+        "crisis"
+      ],
+      "default": "routine"
+    },
+    "desired_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "match_confidence_score": {
+      "type": "number",
+      "description": "0-100 match confidence"
+    },
+    "match_explanation": {
+      "type": "string"
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "under_review",
+        "matched",
+        "accepted",
+        "declined",
+        "placed",
+        "withdrawn"
+      ],
+      "default": "new"
+    },
+    "provider_response": {
+      "type": "string"
+    },
+    "provider_response_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "placement_status": {
+      "type": "string",
+      "enum": [
+        "placed",
+        "not_placed",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Client placement outcome"
+    },
+    "placement_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date client was placed"
+    },
+    "outcome_summary": {
+      "type": "string",
+      "description": "Optional outcome notes (privacy compliant)"
+    },
+    "outcome_satisfaction": {
+      "type": "number",
+      "description": "1-5 satisfaction rating (if available)"
+    }
+  },
+  "required": [
+    "referral_source",
+    "client_county",
+    "funding_source"
+  ]
+}

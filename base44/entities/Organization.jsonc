@@ -1,0 +1,152 @@
+{
+  "name": "Organization",
+  "type": "object",
+  "properties": {
+    "legal_name": {
+      "type": "string",
+      "description": "Legal business name"
+    },
+    "dba_name": {
+      "type": "string",
+      "description": "Doing business as name"
+    },
+    "ein": {
+      "type": "string",
+      "description": "Employer Identification Number"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "default": "MN"
+    },
+    "zip_code": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "primary_contact_name": {
+      "type": "string"
+    },
+    "primary_contact_email": {
+      "type": "string"
+    },
+    "primary_contact_phone": {
+      "type": "string"
+    },
+    "counties_served": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Minnesota counties served"
+    },
+    "waivers_accepted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "CADI, DD, BI, EW, AC, CAC"
+    },
+    "age_ranges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Age bands served: 0-17, 18-21, 22-64, 65+"
+    },
+    "populations_served": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "DD, MI, TBI, Elderly, Physical Disability"
+    },
+    "gender_accepted": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "all"
+      ],
+      "default": "all"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "pending_review"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "unverified"
+    },
+    "completeness_score": {
+      "type": "number",
+      "default": 0,
+      "description": "0-100 completeness percentage"
+    },
+    "risk_score": {
+      "type": "number",
+      "default": 0,
+      "description": "Compliance risk score 0-100"
+    },
+    "onboarding_step": {
+      "type": "number",
+      "default": 1,
+      "description": "Current onboarding step 1-9"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "basic",
+        "professional",
+        "enterprise"
+      ],
+      "default": "none"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "inactive",
+        "trial",
+        "active",
+        "past_due",
+        "cancelled"
+      ],
+      "default": "inactive"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "legal_name",
+    "email"
+  ]
+}

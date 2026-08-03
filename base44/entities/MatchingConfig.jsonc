@@ -1,0 +1,111 @@
+{
+  "name": "MatchingConfig",
+  "type": "object",
+  "properties": {
+    "config_type": {
+      "type": "string",
+      "enum": [
+        "weights",
+        "constraints",
+        "thresholds"
+      ],
+      "default": "weights"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "weights": {
+      "type": "object",
+      "description": "Matching factor weights (0-100)",
+      "properties": {
+        "county_match": {
+          "type": "number",
+          "default": 25
+        },
+        "funding_match": {
+          "type": "number",
+          "default": 20
+        },
+        "gender_match": {
+          "type": "number",
+          "default": 15
+        },
+        "age_match": {
+          "type": "number",
+          "default": 15
+        },
+        "availability_match": {
+          "type": "number",
+          "default": 15
+        },
+        "capability_match": {
+          "type": "number",
+          "default": 10
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Hard constraints that must be met",
+      "properties": {
+        "require_funding_match": {
+          "type": "boolean",
+          "default": true
+        },
+        "require_county_proximity": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_county_distance": {
+          "type": "number",
+          "default": 50
+        },
+        "require_gender_match": {
+          "type": "boolean",
+          "default": true
+        },
+        "require_age_range_match": {
+          "type": "boolean",
+          "default": true
+        },
+        "require_verified_license": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "Score thresholds for match quality",
+      "properties": {
+        "minimum_score": {
+          "type": "number",
+          "default": 40
+        },
+        "good_score": {
+          "type": "number",
+          "default": 70
+        },
+        "excellent_score": {
+          "type": "number",
+          "default": 85
+        },
+        "max_results": {
+          "type": "number",
+          "default": 10
+        }
+      }
+    }
+  },
+  "required": [
+    "config_type",
+    "name"
+  ]
+}

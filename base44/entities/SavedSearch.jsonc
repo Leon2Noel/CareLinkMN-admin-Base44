@@ -1,0 +1,26 @@
+{
+  "name": "SavedSearch",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "User-defined name for the search"
+    },
+    "criteria_json": {
+      "type": "object",
+      "description": "Search criteria: counties, waivers, age, programs, capabilities"
+    },
+    "notify_on_new_matches": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "user_id",
+    "name",
+    "criteria_json"
+  ]
+}

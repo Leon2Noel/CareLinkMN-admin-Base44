@@ -1,0 +1,63 @@
+{
+  "name": "ProfileView",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "provider_profile",
+        "site",
+        "opening"
+      ],
+      "description": "Type of entity viewed"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of viewed entity"
+    },
+    "provider_org_id": {
+      "type": "string",
+      "description": "Provider organization for query optimization"
+    },
+    "viewer_user_id": {
+      "type": "string",
+      "description": "User who viewed (nullable for anonymous)"
+    },
+    "viewer_role": {
+      "type": "string",
+      "enum": [
+        "case_manager",
+        "guardian",
+        "admin",
+        "unknown"
+      ],
+      "description": "Role of viewer"
+    },
+    "viewer_county": {
+      "type": "string",
+      "description": "County of viewer if available"
+    },
+    "referrer": {
+      "type": "string",
+      "enum": [
+        "search",
+        "referral",
+        "direct",
+        "notification",
+        "other"
+      ],
+      "default": "direct",
+      "description": "How viewer found this entity"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "For deduplication within 30 min"
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "provider_org_id",
+    "viewer_role"
+  ]
+}

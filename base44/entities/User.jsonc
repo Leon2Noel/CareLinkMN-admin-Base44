@@ -1,0 +1,39 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "primary_role": {
+      "type": "string",
+      "enum": [
+        "provider",
+        "cm",
+        "family",
+        "guardian",
+        "hospital",
+        "admin"
+      ],
+      "description": "Primary portal role for the user"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "Organization name for providers or case managers"
+    },
+    "county": {
+      "type": "string",
+      "description": "County for case managers"
+    },
+    "profile_completed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "primary_role",
+    "phone",
+    "organization_name",
+    "county"
+  ]
+}

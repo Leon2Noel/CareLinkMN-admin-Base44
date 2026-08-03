@@ -1,0 +1,54 @@
+{
+  "name": "ProgramActivation",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "program_model_id": {
+      "type": "string"
+    },
+    "program_code": {
+      "type": "string"
+    },
+    "qualifying_license_id": {
+      "type": "string",
+      "description": "The license that qualifies this program"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "pending"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "custom_name": {
+      "type": "string",
+      "description": "Provider's custom name for the program"
+    },
+    "description": {
+      "type": "string"
+    },
+    "funding_accepted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "capability_overrides": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "organization_id",
+    "program_model_id",
+    "qualifying_license_id"
+  ]
+}

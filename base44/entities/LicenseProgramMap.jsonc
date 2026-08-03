@@ -1,0 +1,58 @@
+{
+  "name": "LicenseProgramMap",
+  "type": "object",
+  "properties": {
+    "license_type_code": {
+      "type": "string",
+      "description": "License type code (e.g., 245D_INTENSIVE, ALF)"
+    },
+    "program_model_code": {
+      "type": "string",
+      "description": "Program model code (e.g., CRS, MEMORY_CARE)"
+    },
+    "allowed": {
+      "type": "boolean",
+      "default": true
+    },
+    "rule_severity": {
+      "type": "string",
+      "enum": [
+        "block",
+        "warn"
+      ],
+      "default": "block"
+    },
+    "rule_code": {
+      "type": "string",
+      "description": "Unique rule identifier e.g. LIC_PROG_245D_INT_CRS"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable explanation"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Additional conditions JSON"
+    },
+    "requires_verification": {
+      "type": "boolean",
+      "default": true
+    },
+    "min_license_status": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Allowed license statuses: verified, provisional, pending_verification"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "license_type_code",
+    "program_model_code",
+    "rule_code"
+  ]
+}

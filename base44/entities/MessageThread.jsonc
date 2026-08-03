@@ -1,0 +1,61 @@
+{
+  "name": "MessageThread",
+  "type": "object",
+  "properties": {
+    "created_by_user_id": {
+      "type": "string",
+      "description": "User who created the thread"
+    },
+    "created_by_role": {
+      "type": "string",
+      "enum": [
+        "provider",
+        "case_manager",
+        "guardian",
+        "admin"
+      ],
+      "description": "Role of thread creator"
+    },
+    "provider_org_id": {
+      "type": "string",
+      "description": "Provider organization in thread"
+    },
+    "case_manager_user_id": {
+      "type": "string",
+      "description": "Case manager participant"
+    },
+    "guardian_user_id": {
+      "type": "string",
+      "description": "Guardian participant"
+    },
+    "referral_id": {
+      "type": "string",
+      "description": "Optional linked referral"
+    },
+    "opening_id": {
+      "type": "string",
+      "description": "Optional linked opening"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Thread subject/title"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "created_by_user_id",
+    "created_by_role",
+    "provider_org_id"
+  ]
+}

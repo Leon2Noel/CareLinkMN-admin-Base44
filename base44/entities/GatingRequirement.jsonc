@@ -1,0 +1,40 @@
+{
+  "name": "GatingRequirement",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "requirement_code": {
+      "type": "string",
+      "enum": [
+        "HAS_ACTIVE_LICENSE",
+        "HAS_VERIFIED_LICENSE",
+        "HAS_ACTIVE_PROGRAM",
+        "HAS_ACTIVE_SITE",
+        "HAS_ACTIVE_OPENING",
+        "HAS_FUNDING_SELECTION",
+        "HAS_CAPABILITY_PROFILE",
+        "LICENSE_PROGRAM_VALID"
+      ]
+    },
+    "is_met": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "details": {
+      "type": "string"
+    },
+    "blocking_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "requirement_code"
+  ]
+}

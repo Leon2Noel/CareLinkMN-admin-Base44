@@ -1,0 +1,73 @@
+{
+  "name": "MatchingLog",
+  "type": "object",
+  "properties": {
+    "referral_id": {
+      "type": "string"
+    },
+    "query_type": {
+      "type": "string",
+      "enum": [
+        "auto_match",
+        "manual_search",
+        "simulation"
+      ],
+      "default": "auto_match"
+    },
+    "openings_searched": {
+      "type": "number"
+    },
+    "matches_found": {
+      "type": "number"
+    },
+    "top_match_score": {
+      "type": "number"
+    },
+    "avg_match_score": {
+      "type": "number"
+    },
+    "latency_ms": {
+      "type": "number"
+    },
+    "config_snapshot": {
+      "type": "object",
+      "description": "Weights/constraints used at query time"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opening_id": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "score_breakdown": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "filters_applied": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "no_matches",
+        "error"
+      ],
+      "default": "success"
+    },
+    "error_message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "query_type",
+    "status"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "ProgramModel",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "CRS, IHS, RESPITE, MEMORY_CARE, etc."
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "service_category": {
+      "type": "string",
+      "enum": [
+        "residential",
+        "day_services",
+        "in_home",
+        "respite",
+        "crisis",
+        "employment"
+      ],
+      "description": "Broad service category"
+    },
+    "required_license_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "License type codes that can offer this program"
+    },
+    "default_capabilities": {
+      "type": "object",
+      "description": "Default capability requirements"
+    },
+    "funding_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Eligible funding sources"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "code",
+    "name",
+    "service_category"
+  ]
+}

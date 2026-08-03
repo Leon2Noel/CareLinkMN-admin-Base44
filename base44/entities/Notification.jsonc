@@ -1,0 +1,62 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "recipient_user_id": {
+      "type": "string",
+      "description": "User receiving the notification"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "referral_status",
+        "opening_match",
+        "message"
+      ],
+      "description": "Notification category"
+    },
+    "title": {
+      "type": "string",
+      "description": "Notification headline"
+    },
+    "body": {
+      "type": "string",
+      "description": "Notification content"
+    },
+    "link_url": {
+      "type": "string",
+      "description": "Deep link to related entity"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "Type of related entity"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of related entity"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "urgent"
+      ],
+      "default": "info"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "delivered_channels": {
+      "type": "object",
+      "description": "Channels notification was sent to"
+    }
+  },
+  "required": [
+    "recipient_user_id",
+    "type",
+    "title",
+    "body"
+  ]
+}

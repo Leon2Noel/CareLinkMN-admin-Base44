@@ -1,0 +1,79 @@
+{
+  "name": "RuleEvaluation",
+  "type": "object",
+  "properties": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "LicenseInstance",
+        "ProgramActivation",
+        "Site",
+        "Opening",
+        "Referral"
+      ],
+      "description": "Type of entity evaluated"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "organization_id": {
+      "type": "string"
+    },
+    "rule_version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "block"
+      ],
+      "description": "Overall evaluation result"
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_code": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fix_link": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "description": "Snapshot of data at evaluation time"
+    },
+    "evaluated_by": {
+      "type": "string",
+      "enum": [
+        "system",
+        "user"
+      ],
+      "default": "system"
+    }
+  },
+  "required": [
+    "entity_type",
+    "entity_id",
+    "result"
+  ]
+}

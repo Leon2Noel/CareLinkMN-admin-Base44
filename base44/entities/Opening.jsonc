@@ -1,0 +1,217 @@
+{
+  "name": "Opening",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "site_id": {
+      "type": "string"
+    },
+    "program_activation_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "opening_type": {
+      "type": "string",
+      "enum": [
+        "immediate",
+        "upcoming",
+        "waitlist"
+      ],
+      "default": "immediate"
+    },
+    "available_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "spots_available": {
+      "type": "number",
+      "default": 1
+    },
+    "gender_requirement": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "any"
+      ],
+      "default": "any"
+    },
+    "age_min": {
+      "type": "number"
+    },
+    "age_max": {
+      "type": "number"
+    },
+    "funding_accepted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "CADI, DD, BI, EW, MA, Private Pay, etc."
+    },
+    "capability_requirements": {
+      "type": "object",
+      "description": "Specific capability bounds for this opening"
+    },
+    "special_considerations": {
+      "type": "string"
+    },
+    "amenities": {
+      "type": "object",
+      "properties": {
+        "pets_allowed": {
+          "type": "boolean",
+          "default": false
+        },
+        "community_type": {
+          "type": "string",
+          "enum": [
+            "mixed",
+            "females_only",
+            "males_only"
+          ],
+          "default": "mixed"
+        },
+        "private_rooms_available": {
+          "type": "boolean",
+          "default": false
+        },
+        "smoking_permitted": {
+          "type": "boolean",
+          "default": false
+        },
+        "dietary_accommodations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Kosher, halal, vegetarian, gluten-free, etc."
+        },
+        "wheelchair_accessible": {
+          "type": "boolean",
+          "default": false
+        },
+        "transportation_provided": {
+          "type": "boolean",
+          "default": false
+        },
+        "languages_spoken": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Languages staff can communicate in"
+        }
+      }
+    },
+    "services_offered": {
+      "type": "object",
+      "properties": {
+        "on_site_therapy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "PT, OT, speech, behavioral, etc."
+        },
+        "day_program_partnership": {
+          "type": "boolean"
+        },
+        "specialized_medical_care": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "placement_success_metrics": {
+      "type": "object",
+      "properties": {
+        "total_placements_last_year": {
+          "type": "number",
+          "default": 0
+        },
+        "successful_placements_90_days": {
+          "type": "number",
+          "default": 0,
+          "description": "Clients still placed after 90 days"
+        },
+        "average_placement_duration_months": {
+          "type": "number"
+        },
+        "similar_profile_placements": {
+          "type": "number",
+          "description": "Count of successful placements with similar needs/diagnosis"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_approval",
+        "active",
+        "inactive",
+        "filled",
+        "expired",
+        "withdrawn"
+      ],
+      "default": "draft"
+    },
+    "last_confirmed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time provider confirmed availability"
+    },
+    "auto_inactivated_reason": {
+      "type": "string",
+      "description": "Reason for auto-inactivation"
+    },
+    "auto_inactivated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When opening was auto-inactivated"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "case_managers_only",
+        "private"
+      ],
+      "default": "case_managers_only"
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_compliant": {
+      "type": "boolean",
+      "default": false
+    },
+    "views_count": {
+      "type": "number",
+      "default": 0
+    },
+    "inquiries_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "organization_id",
+    "site_id",
+    "program_activation_id",
+    "title"
+  ]
+}

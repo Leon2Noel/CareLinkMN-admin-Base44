@@ -1,0 +1,73 @@
+{
+  "name": "LicenseInstance",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "license_type_id": {
+      "type": "string"
+    },
+    "license_category_code": {
+      "type": "string"
+    },
+    "license_type_code": {
+      "type": "string"
+    },
+    "license_number": {
+      "type": "string"
+    },
+    "issuing_authority": {
+      "type": "string",
+      "enum": [
+        "MDH",
+        "DHS"
+      ]
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiration_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "document_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_upload",
+        "pending_verification",
+        "verified",
+        "expired",
+        "revoked",
+        "rejected"
+      ],
+      "default": "pending_upload"
+    },
+    "verification_notes": {
+      "type": "string"
+    },
+    "verified_by": {
+      "type": "string"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capacity": {
+      "type": "number"
+    },
+    "conditions": {
+      "type": "string",
+      "description": "Special conditions or restrictions"
+    }
+  },
+  "required": [
+    "organization_id",
+    "license_type_id",
+    "license_number"
+  ]
+}

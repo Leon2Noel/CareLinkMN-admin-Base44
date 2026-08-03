@@ -1,0 +1,106 @@
+{
+  "name": "Site",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "site_type": {
+      "type": "string",
+      "enum": [
+        "residential",
+        "day_program",
+        "office",
+        "community_based"
+      ],
+      "default": "residential"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "county": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "default": "MN"
+    },
+    "zip_code": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "total_capacity": {
+      "type": "number"
+    },
+    "current_census": {
+      "type": "number",
+      "default": 0
+    },
+    "gender_restriction": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "all"
+      ],
+      "default": "all"
+    },
+    "age_restriction_min": {
+      "type": "number"
+    },
+    "age_restriction_max": {
+      "type": "number"
+    },
+    "assigned_license_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assigned_program_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "capability_profile_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending_approval"
+      ],
+      "default": "pending_approval"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "organization_id",
+    "name",
+    "address",
+    "city",
+    "county"
+  ]
+}

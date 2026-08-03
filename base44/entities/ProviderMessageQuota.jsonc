@@ -1,0 +1,27 @@
+{
+  "name": "ProviderMessageQuota",
+  "type": "object",
+  "properties": {
+    "provider_org_id": {
+      "type": "string"
+    },
+    "month": {
+      "type": "string",
+      "description": "YYYY-MM format"
+    },
+    "initiated_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of threads initiated this month"
+    },
+    "limit": {
+      "type": "number",
+      "default": 0,
+      "description": "10 for premium, 0 for basic"
+    }
+  },
+  "required": [
+    "provider_org_id",
+    "month"
+  ]
+}

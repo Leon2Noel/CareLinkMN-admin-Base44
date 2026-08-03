@@ -1,0 +1,44 @@
+{
+  "name": "LicenseType",
+  "type": "object",
+  "properties": {
+    "category_id": {
+      "type": "string",
+      "description": "Reference to LicenseCategory"
+    },
+    "code": {
+      "type": "string",
+      "description": "Type code e.g. ALF, ALD, 245D_BASIC"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "allowed_program_models": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Program model codes this license allows"
+    },
+    "max_capacity": {
+      "type": "number",
+      "description": "Maximum bed/client capacity if applicable"
+    },
+    "renewal_period_months": {
+      "type": "number",
+      "default": 12
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "category_id",
+    "code",
+    "name"
+  ]
+}
